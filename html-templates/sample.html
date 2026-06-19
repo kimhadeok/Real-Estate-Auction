@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AuctionAgent AI - Interactive UI Drafts</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800&display=swap');
+
+        :root {
+            --primary: #0F172A;
+            /* Slate 900 */
+            --secondary: #1E293B;
+            /* Slate 800 */
+            --accent-green: #10B981;
+            /* Emerald 500 */
+            --accent-blue: #3B82F6;
+            /* Blue 500 */
+            --warning-red: #EF4444;
+            /* Red 500 */
+        }
+
+        body {
+            font-family: 'Pretendard', sans-serif;
+            background-color: #020617;
+            /* Slate 950 */
+            color: #F8FAFC;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0F172A;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex flex-col antialiased">
+
+    <!-- Top Navigation Bar -->
+    <header class="sticky top-0 z-50 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <!-- Brand Logo -->
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="showPage('page-dashboard')">
+                <div
+                    class="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-emerald-500 flex items-center justify-center font-bold text-white text-lg shadow-lg shadow-blue-500/20">
+                    A
+                </div>
+                <span
+                    class="text-xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-200 to-slate-400">
+                    AuctionAgent <span class="text-emerald-400 font-bold">AI</span>
+                </span>
+            </div>
+
+            <!-- Global Stats (Header Area) -->
+            <div class="hidden md:flex items-center space-x-6 text-sm text-slate-400">
+                <div class="flex items-center space-x-2">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span>SQLite RAG 엔진 정상 작동 중</span>
+                </div>
+                <div class="h-4 w-px bg-slate-800"></div>
+                <div>ChromaDB 검색 속도: <span class="text-blue-400 font-semibold">14ms</span></div>
+            </div>
+
+            <!-- Profile & Dev Mode Badge -->
+            <div class="flex items-center space-x-4">
+                <span
+                    class="px-2.5 py-1 text-xs font-semibold bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded-md">
+                    Vanilla JS SPA 시안
+                </span>
+                <div
+                    class="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-xs font-bold text-slate-300">
+                    User
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Workspace Container -->
+    <main class="flex-grow max-w-7xl w-full mx-auto p-4 md:p-6 space-y-6">
+
+        <!-- ==================== SCREEN 1: DASHBOARD PAGE ==================== -->
+        <section id="page-dashboard" class="space-y-8 animate-fadeIn">
+            <!-- Hero Search Section -->
+            <div
+                class="p-8 md:p-12 rounded-3xl bg-gradient-to-br from-slate-900 via-slate-900 to-blue-950/40 border border-slate-800/80 relative overflow-hidden">
+                <div class="absolute -right-24 -bottom-24 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl"></div>
+                <div class="absolute -left-24 -top-24 w-96 h-96 bg-emerald-500/5 rounded-full blur-3xl"></div>
+
+                <div class="max-w-2xl space-y-4 relative z-10">
+                    <span
+                        class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-emerald-400/10 text-emerald-400 border border-emerald-400/20">
+                        ✨ 20년 경력의 경매 안목을 AI Agent로 구현했습니다
+                    </span>
+                    <h1 class="text-3xl md:text-5xl font-extrabold tracking-tight leading-tight">
+                        사법 리스크는 제로로,<br>낙찰 수익률은 <span
+                            class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-blue-500">최대로.</span>
+                    </h1>
+                    <p class="text-slate-400 text-sm md:text-base">
+                        복잡한 등기부등본 권리 분석부터 실시간 시세 그라운딩, 최적 배팅 금액 계산까지 원스톱으로 지원합니다.
+                    </p>
+
+                    <!-- Large Search Box -->
+                    <div class="pt-4 flex flex-col sm:flex-row gap-2 max-w-xl">
+                        <div class="relative flex-grow">
+                            <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" fill="none"
+                                stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                            <input type="text" placeholder="사건번호(예: 2026타경12345) 또는 마포구, 빌라..."
+                                class="w-full pl-11 pr-4 py-3.5 bg-slate-950 border border-slate-800 rounded-2xl focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm text-slate-200 transition-all">
+                        </div>
+                        <button
+                            class="px-6 py-3.5 bg-emerald-500 hover:bg-emerald-600 active:scale-95 text-slate-950 font-bold rounded-2xl transition-all text-sm shadow-lg shadow-emerald-500/10">
+                            AI 정밀 분석
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Recommended Themes Section -->
+            <div class="space-y-4">
+                <div class="flex justify-between items-end">
+                    <h2 class="text-xl font-extrabold flex items-center gap-2 text-slate-200">
+                        <span class="text-emerald-400">💡</span> AI 기획 추천 테마 물건
+                    </h2>
+                    <span class="text-xs text-slate-500">실시간 SQLite 매칭 데이터</span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Card 1: 반값 아파트 -->
+                    <div onclick="openReport('2026타경12345')"
+                        class="p-5 rounded-2xl bg-slate-900 border border-slate-800 hover:border-red-500/40 transition-all cursor-pointer group hover:-translate-y-1 shadow-lg">
+                        <div class="flex justify-between items-start mb-4">
+                            <span
+                                class="px-2.5 py-0.5 rounded-md text-[11px] font-bold bg-red-500/10 text-red-400 border border-red-500/20">
+                                반값 아파트 ⚡
+                            </span>
+                            <span class="text-xs text-slate-500">유찰 2회</span>
+                        </div>
+                        <h3 class="font-bold text-slate-200 text-base group-hover:text-emerald-400 transition-colors">서울
+                            마포구 대흥동 마포아파트</h3>
+                        <p class="text-xs text-slate-400 mt-1">사건번호 2026타경12345</p>
+                        <div class="mt-6 pt-4 border-t border-slate-800/80 flex justify-between items-end">
+                            <div>
+                                <p class="text-[10px] text-slate-500 uppercase">감정가 10억</p>
+                                <p class="text-sm font-extrabold text-slate-200">최저가 <span class="text-red-400">6억
+                                        4,000만</span></p>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-[10px] text-emerald-400 font-bold block">안전 점수</span>
+                                <span class="text-sm font-extrabold text-emerald-400">85점</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 2: 인수 없는 깨끗한 물건 -->
+                    <div onclick="openReport('2026타경44912')"
+                        class="p-5 rounded-2xl bg-slate-900 border border-slate-800 hover:border-emerald-500/40 transition-all cursor-pointer group hover:-translate-y-1 shadow-lg">
+                        <div class="flex justify-between items-start mb-4">
+                            <span
+                                class="px-2.5 py-0.5 rounded-md text-[11px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                                인수금 제로 🛡️
+                            </span>
+                            <span class="text-xs text-slate-500">유찰 1회</span>
+                        </div>
+                        <h3 class="font-bold text-slate-200 text-base group-hover:text-emerald-400 transition-colors">서울
+                            서대문구 북아현동 하이츠</h3>
+                        <p class="text-xs text-slate-400 mt-1">사건번호 2026타경44912</p>
+                        <div class="mt-6 pt-4 border-t border-slate-800/80 flex justify-between items-end">
+                            <div>
+                                <p class="text-[10px] text-slate-500 uppercase">감정가 6.5억</p>
+                                <p class="text-sm font-extrabold text-slate-200">최저가 <span class="text-emerald-400">5억
+                                        2,000만</span></p>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-[10px] text-emerald-400 font-bold block">안전 점수</span>
+                                <span class="text-sm font-extrabold text-emerald-400">98점</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 3: 초보자 추천 물건 -->
+                    <div onclick="openReport('2026타경88211')"
+                        class="p-5 rounded-2xl bg-slate-900 border border-slate-800 hover:border-blue-500/40 transition-all cursor-pointer group hover:-translate-y-1 shadow-lg">
+                        <div class="flex justify-between items-start mb-4">
+                            <span
+                                class="px-2.5 py-0.5 rounded-md text-[11px] font-bold bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                                왕초보 적합 🐥
+                            </span>
+                            <span class="text-xs text-slate-500">유찰 1회</span>
+                        </div>
+                        <h3 class="font-bold text-slate-200 text-base group-hover:text-emerald-400 transition-colors">서울
+                            마포구 공덕동 빌라</h3>
+                        <p class="text-xs text-slate-400 mt-1">사건번호 2026타경88211</p>
+                        <div class="mt-6 pt-4 border-t border-slate-800/80 flex justify-between items-end">
+                            <div>
+                                <p class="text-[10px] text-slate-500 uppercase">감정가 3.2억</p>
+                                <p class="text-sm font-extrabold text-slate-200">최저가 <span class="text-blue-400">2억
+                                        5,600만</span></p>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-[10px] text-emerald-400 font-bold block">안전 점수</span>
+                                <span class="text-sm font-extrabold text-emerald-400">92점</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Full List (SQLite Table Mockup) -->
+            <div class="space-y-4">
+                <h2 class="text-xl font-extrabold flex items-center gap-2 text-slate-200">
+                    📂 마포 법원 진행 경매 리스트 <span class="text-xs text-slate-500 font-normal">(SQLite에서 가볍게 읽어온 6건)</span>
+                </h2>
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm text-slate-300">
+                            <thead
+                                class="bg-slate-950 text-slate-400 border-b border-slate-800 text-xs uppercase font-semibold">
+                                <tr>
+                                    <th class="px-6 py-4">사건번호</th>
+                                    <th class="px-6 py-4">소재지</th>
+                                    <th class="px-6 py-4">감정가 / 최저가</th>
+                                    <th class="px-6 py-4">안전도 점수</th>
+                                    <th class="px-6 py-4 text-right">상세 분석</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-800/60">
+                                <tr class="hover:bg-slate-800/30 transition-colors cursor-pointer"
+                                    onclick="openReport('2026타경12345')">
+                                    <td class="px-6 py-4 font-bold text-blue-400">2026타경12345</td>
+                                    <td class="px-6 py-4 font-medium text-slate-200">서울 마포구 대흥동 마포아파트 104동 1202호</td>
+                                    <td class="px-6 py-4">
+                                        <div class="text-xs text-slate-500">1,000,000,000 원</div>
+                                        <div class="font-bold text-red-400">640,000,000 원</div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span
+                                            class="px-2 py-1 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-semibold">85점
+                                            (안전)</span>
+                                    </td>
+                                    <td class="px-6 py-4 text-right">
+                                        <button
+                                            class="px-3 py-1.5 bg-slate-800 hover:bg-emerald-500 hover:text-slate-950 font-semibold rounded-lg text-xs transition-all">보고서
+                                            열람 ➔</button>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-slate-800/30 transition-colors cursor-pointer"
+                                    onclick="openReport('2026타경44912')">
+                                    <td class="px-6 py-4 font-bold text-blue-400">2026타경44912</td>
+                                    <td class="px-6 py-4 font-medium text-slate-200">서울 서대문구 북아현동 북아현 하이츠빌라 B01호</td>
+                                    <td class="px-6 py-4">
+                                        <div class="text-xs text-slate-500">650,000,000 원</div>
+                                        <div class="font-bold text-emerald-400">520,000,000 원</div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span
+                                            class="px-2 py-1 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-semibold">98점
+                                            (매우안전)</span>
+                                    </td>
+                                    <td class="px-6 py-4 text-right">
+                                        <button
+                                            class="px-3 py-1.5 bg-slate-800 hover:bg-emerald-500 hover:text-slate-950 font-semibold rounded-lg text-xs transition-all">보고서
+                                            열람 ➔</button>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-slate-800/30 transition-colors cursor-pointer"
+                                    onclick="openReport('2026타경88211')">
+                                    <td class="px-6 py-4 font-bold text-blue-400">2026타경88211</td>
+                                    <td class="px-6 py-4 font-medium text-slate-200">서울 마포구 공덕동 명품팰리스 301호</td>
+                                    <td class="px-6 py-4">
+                                        <div class="text-xs text-slate-500">320,000,000 원</div>
+                                        <div class="font-bold text-blue-400">256,000,000 원</div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span
+                                            class="px-2 py-1 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-semibold">92점
+                                            (안전)</span>
+                                    </td>
+                                    <td class="px-6 py-4 text-right">
+                                        <button
+                                            class="px-3 py-1.5 bg-slate-800 hover:bg-emerald-500 hover:text-slate-950 font-semibold rounded-lg text-xs transition-all">보고서
+                                            열람 ➔</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ==================== SCREEN 2: AI REPORT VIEW PAGE ==================== -->
+        <section id="page-report" class="hidden space-y-6 animate-fadeIn">
+            <!-- Report Meta Header -->
+            <div
+                class="p-6 rounded-2xl bg-slate-900 border border-slate-800 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div class="space-y-1">
+                    <div class="flex items-center space-x-3">
+                        <span
+                            class="px-2 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20 text-xs font-bold"
+                            id="detail-case-badge">2026타경12345</span>
+                        <span class="text-xs text-slate-400">용도: 공동주택(아파트)</span>
+                    </div>
+                    <h2 class="text-2xl font-black text-slate-100" id="detail-address-title">서울 마포구 대흥동 마포아파트 104동 1202호
+                    </h2>
+                    <p class="text-xs text-slate-500">감정가 1,000,000,000원 | <span class="text-red-400 font-bold">최저가
+                            640,000,000원 (유찰 2회)</span></p>
+                </div>
+                <div class="flex items-center space-x-2 w-full md:w-auto">
+                    <button onclick="showPage('page-dashboard')"
+                        class="flex-grow md:flex-grow-0 px-4 py-2 bg-slate-800 hover:bg-slate-700 font-semibold rounded-xl text-xs transition-all">
+                        🔙 목록으로
+                    </button>
+                    <button onclick="switchTab('tab-negotiation')"
+                        class="flex-grow md:flex-grow-0 px-4 py-2 bg-gradient-to-r from-emerald-500 to-blue-600 hover:from-emerald-600 hover:to-blue-700 font-bold text-slate-950 rounded-xl text-xs transition-all shadow-lg shadow-emerald-500/10">
+                        🤝 AI 명도 시뮬레이터 시작
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tab Buttons Container -->
+            <div class="flex space-x-2 border-b border-slate-800 overflow-x-auto">
+                <button onclick="switchTab('tab-rights')" id="btn-tab-rights"
+                    class="tab-btn px-6 py-3 text-sm font-bold border-b-2 border-emerald-500 text-emerald-400 transition-all">
+                    ⚖️ 1. AI 권리분석
+                </button>
+                <button onclick="switchTab('tab-virtual')" id="btn-tab-virtual"
+                    class="tab-btn px-6 py-3 text-sm font-bold text-slate-400 hover:text-slate-200 border-b-2 border-transparent transition-all">
+                    📍 2. 가상임장 & 지리
+                </button>
+                <button onclick="switchTab('tab-oracle')" id="btn-tab-oracle"
+                    class="tab-btn px-6 py-3 text-sm font-bold text-slate-400 hover:text-slate-200 border-b-2 border-transparent transition-all">
+                    🔮 3. 입찰가 예측 (Oracle)
+                </button>
+                <button onclick="switchTab('tab-negotiation')" id="btn-tab-negotiation"
+                    class="tab-btn px-6 py-3 text-sm font-bold text-slate-400 hover:text-slate-200 border-b-2 border-transparent transition-all">
+                    💬 4. AI 명도 시뮬레이터
+                </button>
+            </div>
+
+            <!-- TAB 1: RIGHTS ANALYSIS CONTENT -->
+            <div id="tab-rights" class="tab-content grid grid-cols-1 md:grid-cols-3 gap-6 animate-fadeIn">
+                <!-- Left: Big Safety Score Card -->
+                <div
+                    class="md:col-span-1 p-6 rounded-2xl bg-slate-900 border border-slate-800 flex flex-col justify-between space-y-6">
+                    <div>
+                        <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider">AI 권리 안전 점수</h3>
+                        <p class="text-xs text-slate-500 mt-1">사법적 인수 보증금 리스크 분석 결과</p>
+                    </div>
+
+                    <!-- Visual Circle Gauge -->
+                    <div class="relative w-40 h-40 mx-auto flex items-center justify-center">
+                        <svg class="w-full h-full transform -rotate-90">
+                            <circle cx="80" cy="80" r="70" class="stroke-slate-800 fill-none" stroke-width="12">
+                            </circle>
+                            <circle cx="80" cy="80" r="70" class="stroke-emerald-500 fill-none" stroke-width="12"
+                                stroke-dasharray="440" stroke-dashoffset="66" stroke-linecap="round"></circle>
+                        </svg>
+                        <div class="absolute text-center">
+                            <span class="text-4xl font-extrabold text-slate-100" id="detail-rights-score">85</span>
+                            <span class="text-sm text-slate-400 block font-semibold mt-0.5">안전함</span>
+                        </div>
+                    </div>
+
+                    <div class="p-4 rounded-xl bg-emerald-500/5 border border-emerald-500/15">
+                        <p class="text-xs text-emerald-400 font-medium leading-relaxed" id="detail-rights-summary">
+                            말소기준권리 이후 소멸되지 않는 악성 선순위 가등기나 가처분이 발견되지 않았습니다. 입찰 후 보증금을 날릴 리스크가 매우 낮습니다.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Right: Detailed Rights Timeline and Risks -->
+                <div class="md:col-span-2 space-y-6">
+                    <!-- Timeline Card -->
+                    <div class="p-6 rounded-2xl bg-slate-900 border border-slate-800 space-y-4">
+                        <h3 class="font-extrabold text-base flex items-center gap-2 text-slate-200">
+                            📜 등기부 권리 분석 타임라인 <span class="text-xs text-slate-500 font-normal">(SQLite 연동 데이터)</span>
+                        </h3>
+                        <div
+                            class="relative pl-6 space-y-6 before:absolute before:left-2 before:top-2 before:bottom-2 before:w-0.5 before:bg-slate-800">
+                            <!-- Timeline Event 1 -->
+                            <div class="relative">
+                                <span
+                                    class="absolute -left-6 top-1.5 w-4 h-4 rounded-full bg-slate-800 border-4 border-slate-950"></span>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-xs text-slate-500 font-semibold">2020.04.12</span>
+                                    <span
+                                        class="px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-400 text-[10px] font-bold border border-blue-500/20">대항력
+                                        없음</span>
+                                </div>
+                                <h4 class="font-bold text-sm text-slate-200 mt-1">임차인 김현아 전입신고 (보증금 1억 5천만 원)</h4>
+                                <p class="text-xs text-slate-400 leading-relaxed">확정일자일이 근저당보다 늦으며 전입이 늦으므로 보증금 중 매각대금
+                                    미배당액은 낙찰자가 인수하지 않고 **소멸**합니다.</p>
+                            </div>
+                            <!-- Timeline Event 2 -->
+                            <div class="relative">
+                                <span
+                                    class="absolute -left-6 top-1.5 w-4 h-4 rounded-full bg-emerald-500 border-4 border-slate-950"></span>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-xs text-slate-500 font-semibold">2021.05.10</span>
+                                    <span
+                                        class="px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 text-[10px] font-extrabold border border-emerald-500/30">말소기준권리</span>
+                                </div>
+                                <h4 class="font-bold text-sm text-emerald-400 mt-1">신한은행 근저당권 (채무액 5억 4천만 원)</h4>
+                                <p class="text-xs text-slate-400 leading-relaxed">본 경매물건의 기준 권리입니다. 이 날짜 이후에 등록된 등기상 모든
+                                    설정 권리는 낙찰과 동시에 자동으로 말소(소멸)됩니다.</p>
+                            </div>
+                            <!-- Timeline Event 3 -->
+                            <div class="relative">
+                                <span
+                                    class="absolute -left-6 top-1.5 w-4 h-4 rounded-full bg-slate-800 border-4 border-slate-950"></span>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-xs text-slate-500 font-semibold">2024.11.02</span>
+                                    <span
+                                        class="px-1.5 py-0.5 rounded bg-slate-700 text-slate-400 text-[10px] font-bold border border-slate-600">자동
+                                        소멸</span>
+                                </div>
+                                <h4 class="font-bold text-sm text-slate-200 mt-1">마포세무서 압류</h4>
+                                <p class="text-xs text-slate-400 leading-relaxed">국세 가압류 건이나 말소기준권리보다 후순위이므로 낙찰 후 전액 말소
+                                    처리 대상입니다.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Hidden Risks Alert Card -->
+                    <div class="p-5 rounded-2xl bg-amber-500/5 border border-amber-500/15 flex gap-4">
+                        <div
+                            class="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-500 text-xl font-bold shrink-0">
+                            ⚠️</div>
+                        <div class="space-y-1">
+                            <h4 class="font-bold text-sm text-amber-400">인수 가능성이 지극히 낮은 후순위 유치권 신고 감지</h4>
+                            <p class="text-xs text-slate-300 leading-relaxed">
+                                공사대금 명목으로 4,500만 원의 유치권 신고서가 제출되어 있으나, 관리사무소 점유 사실 확인 및 대법원 판례 데이터 RAG 대조 결과 실제 점유가 행해지지
+                                않고 있어 유치권이 성립할 수 없는 물건으로 분류되었습니다.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: VIRTUAL REPORTER (GEOGRAPHY & VIRTUAL TOUR) -->
+            <div id="tab-virtual" class="tab-content hidden grid grid-cols-1 md:grid-cols-3 gap-6 animate-fadeIn">
+                <!-- Left: Virtual Map View & Infrastructure -->
+                <div class="md:col-span-1 p-6 rounded-2xl bg-slate-900 border border-slate-800 space-y-6">
+                    <div>
+                        <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider">주변 인프라 및 거리</h3>
+                        <p class="text-xs text-slate-500 mt-1">하버사인 거리 알고리즘 좌표 연산 결과</p>
+                    </div>
+
+                    <!-- Map Graphic -->
+                    <div
+                        class="w-full h-48 rounded-xl bg-slate-950 border border-slate-800 relative overflow-hidden flex items-center justify-center">
+                        <!-- Simulated map SVG/Design -->
+                        <div
+                            class="absolute inset-0 bg-slate-900 opacity-40 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:24px_24px]">
+                        </div>
+                        <div class="relative flex flex-col items-center">
+                            <span class="w-3 h-3 rounded-full bg-blue-500 animate-ping absolute"></span>
+                            <span class="w-3 h-3 rounded-full bg-blue-500 border-2 border-white relative"></span>
+                            <span
+                                class="text-[10px] text-slate-300 font-bold bg-slate-900/90 border border-slate-800 px-1.5 py-0.5 rounded mt-1.5">대상
+                                아파트</span>
+                        </div>
+                        <div
+                            class="absolute bottom-4 left-4 bg-slate-900/90 border border-slate-800 px-2 py-1 rounded text-[10px] font-mono text-slate-400">
+                            GPS: 37.5501, 126.9423
+                        </div>
+                    </div>
+
+                    <!-- Infrastructure list -->
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center text-xs text-slate-300">
+                            <span class="flex items-center gap-1.5"><span class="text-blue-400 font-bold">🚉</span> 대흥역
+                                (6호선)</span>
+                            <span class="font-bold text-blue-400" id="infra-metro">도보 4분 (280m)</span>
+                        </div>
+                        <div class="flex justify-between items-center text-xs text-slate-300">
+                            <span class="flex items-center gap-1.5"><span class="text-emerald-400 font-bold">🏫</span>
+                                서울용강초등학교</span>
+                            <span class="font-bold text-emerald-400" id="infra-school">도보 5분 (340m)</span>
+                        </div>
+                        <div class="flex justify-between items-center text-xs text-slate-300">
+                            <span class="flex items-center gap-1.5"><span class="text-rose-400 font-bold">🌳</span> 경의선
+                                숲길 공원</span>
+                            <span class="font-bold text-rose-400" id="infra-park">도보 3분 (180m)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: AI Search Grounding Briefing & News -->
+                <div class="md:col-span-2 space-y-6">
+                    <div class="p-6 rounded-2xl bg-slate-900 border border-slate-800 space-y-4">
+                        <h3 class="font-extrabold text-base text-slate-200">
+                            📡 실시간 가상 임장 브리핑 <span class="text-xs text-slate-500 font-normal">(Google Search Grounding
+                                정보)</span>
+                        </h3>
+                        <p class="text-xs text-slate-400 leading-relaxed">
+                            물리적 거리는 하버사인 공식을 따르고, 현장 정황 정보는 구글 서치 엔진을 통해 실시간 매칭 분석을 완료했습니다.
+                        </p>
+                        <div class="h-px bg-slate-800/80"></div>
+                        <div class="space-y-4 text-xs md:text-sm text-slate-300">
+                            <div class="space-y-1">
+                                <h4 class="font-bold text-slate-200 flex items-center gap-2">
+                                    <span class="text-emerald-400">●</span> 교통 호재 및 호재 정보
+                                </h4>
+                                <p class="text-xs text-slate-400 pl-4 leading-relaxed">
+                                    인근 공덕역 신안산선 환승 정비 사업 및 역세권 컴팩트시티 개발 계획의 간접 수혜권역입니다. 대중교통 접근성이 우수하여 임대 수요가 끊이지 않는 핵심
+                                    권역입니다.
+                                </p>
+                            </div>
+                            <div class="space-y-1">
+                                <h4 class="font-bold text-slate-200 flex items-center gap-2">
+                                    <span class="text-red-400">●</span> 관리 상태 및 실제 거주 리뷰
+                                </h4>
+                                <p class="text-xs text-slate-400 pl-4 leading-relaxed">
+                                    준공 20년 차 구축이나 관리사무소 점검 결과 최근 엘리베이터 전면 교체 완료 및 내부 난방 배관 고도화가 끝나 고질적인 아파트 누수 문제가 상당 부분
+                                    해결되었습니다.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Live News Flash Mockup -->
+                    <div class="p-5 bg-blue-500/5 border border-blue-500/15 rounded-2xl space-y-2">
+                        <span
+                            class="px-2 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20 text-[10px] font-extrabold">NEWS
+                            FLASH</span>
+                        <p class="text-xs font-bold text-slate-200">"대흥동 재개발 인근 이주 수요 폭발로 전세가율 72% 돌파..."</p>
+                        <p class="text-[11px] text-slate-400 leading-relaxed">
+                            최근 뉴스 통계 분석에 따르면, 인근 정비구역 철거 이주자가 급증하여 낙찰 즉시 높은 수준의 전세를 맞춰 실투자금을 전액 회수(갭투자 형태)할 수 있는 최적의
+                            타이밍입니다.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 3: PRICE ORACLE (BIDDING SIMULATOR) -->
+            <div id="tab-oracle" class="tab-content hidden grid grid-cols-1 md:grid-cols-3 gap-6 animate-fadeIn">
+                <!-- Left: Yield Interactive Slider Control -->
+                <div
+                    class="md:col-span-1 p-6 rounded-2xl bg-slate-900 border border-slate-800 space-y-6 flex flex-col justify-between">
+                    <div class="space-y-2">
+                        <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider">희망 목표 수익률 설정</h3>
+                        <p class="text-xs text-slate-500">원하시는 세전 순수익률을 조절하여 맞춤형 입찰가를 역산합니다.</p>
+                    </div>
+
+                    <!-- Slider Control -->
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs text-slate-400">목표 수익률</span>
+                            <span class="text-2xl font-black text-emerald-400" id="val-yield">10 %</span>
+                        </div>
+                        <input type="range" id="slider-yield" min="5" max="30" value="10"
+                            class="w-full h-2 bg-slate-950 border border-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-500">
+                        <div class="flex justify-between text-[10px] text-slate-500">
+                            <span>낮은 수익률 (낙찰 확률 높음)</span>
+                            <span>높은 수익률 (낙찰 확률 낮음)</span>
+                        </div>
+                    </div>
+
+                    <!-- Highlight Target Price -->
+                    <div class="p-4 rounded-xl bg-slate-950 border border-slate-800/80 space-y-1 text-center">
+                        <span class="text-xs text-slate-500">목표 수익 달성을 위한 최대 입찰가</span>
+                        <p class="text-2xl font-extrabold text-slate-100" id="val-bidding-price">8억 2,500 만원</p>
+                    </div>
+                </div>
+
+                <!-- Right: Capital & Cost Dynamic Calculation -->
+                <div class="md:col-span-2 space-y-6">
+                    <div class="p-6 rounded-2xl bg-slate-900 border border-slate-800 space-y-4">
+                        <h3 class="font-extrabold text-base text-slate-200">
+                            ⚙️ 세후 실투자금 시뮬레이션 <span class="text-xs text-slate-500 font-normal">(감정가 10억 기준 자동 역산)</span>
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                            <!-- Column 1: Needed Out-of-pocket cash -->
+                            <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-3">
+                                <span class="text-xs text-slate-500 font-bold block">필요 현금 (자기자본)</span>
+                                <div class="space-y-2 text-xs">
+                                    <div class="flex justify-between">
+                                        <span class="text-slate-400">입찰 보증금 (10%)</span>
+                                        <span class="font-semibold text-slate-200" id="cost-deposit">80,000,000 원</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-slate-400">잔금 부족액 (대출 70% 제회)</span>
+                                        <span class="font-semibold text-slate-200" id="cost-cash">147,500,000 원</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-slate-400">취등록세 및 법무수수료</span>
+                                        <span class="font-semibold text-slate-200" id="cost-tax">18,500,000 원</span>
+                                    </div>
+                                    <div class="h-px bg-slate-800"></div>
+                                    <div class="flex justify-between text-emerald-400 font-bold">
+                                        <span>실질 필요 자본금</span>
+                                        <span id="cost-total-cash">246,000,000 원</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Column 2: Winning Probability Gauge -->
+                            <div
+                                class="p-4 rounded-xl bg-slate-950 border border-slate-800 flex flex-col justify-between">
+                                <div>
+                                    <span class="text-xs text-slate-500 font-bold block">낙찰 성공 예상 확률</span>
+                                    <p class="text-xs text-slate-400 mt-1">최근 마포 아파트 낙찰가율 데이터 기반 산출</p>
+                                </div>
+                                <div class="space-y-2">
+                                    <div class="flex justify-between items-end text-xs">
+                                        <span class="font-bold text-slate-200">경쟁률 보통</span>
+                                        <span class="text-emerald-400 font-bold" id="probability-text">78% (높음)</span>
+                                    </div>
+                                    <div class="w-full bg-slate-800 rounded-full h-3.5 overflow-hidden">
+                                        <div id="probability-bar"
+                                            class="bg-gradient-to-r from-emerald-500 to-blue-500 h-full rounded-full transition-all duration-300"
+                                            style="width: 78%;"></div>
+                                    </div>
+                                </div>
+                                <p class="text-[10px] text-slate-500 leading-relaxed">
+                                    * 입찰 참여자가 평균 4.2명으로 예상되며 오버페이 없이 최적의 마진율 구간입니다.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PostGIS Warning Hint -->
+                    <div class="p-4 rounded-xl bg-blue-500/5 border border-blue-500/15 flex gap-3 items-center">
+                        <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
+                        <span class="text-xs text-slate-400">
+                            **마이그레이션 팁**: 해당 시뮬레이션 공식은 PostgreSQL 이관 시 `pg_trgm` 및 통계 확장 함수로 온-타임 자동 인덱싱 배치 처리가 가능하도록 함수
+                            모듈화가 설계 완료되어 있습니다.
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 4: NEGOTIATION SIMULATOR (CHAT BOT) -->
+            <div id="tab-negotiation" class="tab-content hidden grid grid-cols-1 md:grid-cols-3 gap-6 animate-fadeIn">
+                <!-- Left: Occupant Info & Profile -->
+                <div
+                    class="md:col-span-1 p-6 rounded-2xl bg-slate-900 border border-slate-800 space-y-6 flex flex-col justify-between">
+                    <div class="space-y-4">
+                        <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider">점유자 성향 프로필</h3>
+
+                        <div class="p-4 bg-slate-950 rounded-xl border border-slate-800 flex items-center space-x-3">
+                            <div
+                                class="w-12 h-12 rounded-full bg-red-500/20 text-red-400 border border-red-500/30 flex items-center justify-center font-bold text-lg shrink-0">
+                                막무
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-sm text-slate-200">김만수 (막무가내형 소유자)</h4>
+                                <p class="text-[11px] text-red-400">보증금 전액 손실로 인한 저항 지수 높음</p>
+                            </div>
+                        </div>
+
+                        <div class="space-y-2 text-xs">
+                            <span class="text-slate-500 font-bold block">점유 성향 정보 요약 (ChromaDB 로드)</span>
+                            <p
+                                class="text-slate-300 leading-relaxed bg-slate-950/60 p-3 rounded-lg border border-slate-800/60">
+                                본 아파트의 원 소유자로 주택 담보 부실로 강제 매각에 처했습니다. 최근 점유 유형 판결 데이터에 근거해 '과도한 이사비 요구 및 이행 지연' 성향이 84%
+                                확률로 예측됩니다.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Negotiation status metrics -->
+                    <div class="space-y-3 pt-4 border-t border-slate-800/80">
+                        <div class="space-y-1">
+                            <div class="flex justify-between text-xs font-semibold">
+                                <span class="text-slate-400">협상 타결 가능성</span>
+                                <span class="text-emerald-400" id="negotiation-success-rate">45%</span>
+                            </div>
+                            <div class="w-full bg-slate-950 h-2 rounded-full overflow-hidden">
+                                <div id="negotiation-success-bar" class="bg-emerald-500 h-full transition-all"
+                                    style="width: 45%;"></div>
+                            </div>
+                        </div>
+                        <div class="space-y-1">
+                            <div class="flex justify-between text-xs font-semibold">
+                                <span class="text-slate-400">가상 점유자 분노 지수</span>
+                                <span class="text-red-400" id="occupant-anger-rate">75%</span>
+                            </div>
+                            <div class="w-full bg-slate-950 h-2 rounded-full overflow-hidden">
+                                <div id="occupant-anger-bar" class="bg-red-500 h-full transition-all"
+                                    style="width: 75%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Chat Window Interface -->
+                <div
+                    class="md:col-span-2 p-4 md:p-6 rounded-2xl bg-slate-900 border border-slate-800 flex flex-col h-[500px]">
+                    <!-- Chat Header -->
+                    <div class="flex justify-between items-center pb-4 border-b border-slate-800/80 mb-4">
+                        <div class="flex items-center space-x-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-red-500"></span>
+                            <h4 class="font-bold text-sm text-slate-200">AI 명도 롤플레잉 연습 채널</h4>
+                        </div>
+                        <span class="text-[10px] text-slate-500">실시간 Gemini 대화 가이드 적용</span>
+                    </div>
+
+                    <!-- Chat Messages View Container -->
+                    <div id="chat-messages" class="flex-grow overflow-y-auto space-y-4 pr-2 text-xs md:text-sm">
+                        <!-- Message 1 (Opponent) -->
+                        <div class="flex space-x-3 items-start">
+                            <div
+                                class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-xs font-bold text-slate-400 shrink-0">
+                                김</div>
+                            <div
+                                class="bg-slate-950 border border-slate-800 text-slate-300 p-3 rounded-2xl rounded-tl-none max-w-[80%] leading-relaxed">
+                                "낙찰받으셨나 본데 난 이사비로 1,500만 원 안 주면 절대 이 집 안 비워줄 겁니다! 법대로 마음대로 강제집행을 해보쇼. 반년 넘게 걸릴 텐데 감당
+                                되시나?"
+                            </div>
+                        </div>
+
+                        <!-- Dynamic elements go here -->
+                    </div>
+
+                    <!-- Quick Pre-made replies to click -->
+                    <div class="py-3 border-t border-slate-800/60 mt-4">
+                        <span class="text-[10px] text-slate-500 font-bold block mb-2">💡 전문가 훈련용 프리셋 답변 (클릭해 바로 테스트
+                            가능)</span>
+                        <div class="flex flex-wrap gap-2">
+                            <button
+                                onclick="sendPresetMessage('선생님의 사정이 참 안타깝습니다. 하지만 저희도 가용 자산 한도가 있어서 이사비는 실질 법적 기준액인 300만 원 선에서만 지원이 가능합니다.')"
+                                class="px-2.5 py-1.5 bg-slate-950 hover:bg-slate-800 text-[11px] text-slate-300 border border-slate-800 rounded-lg text-left truncate max-w-xs md:max-w-md transition-all">
+                                💬 이사비 300만원 제안하기 (합리적 타협)
+                            </button>
+                            <button
+                                onclick="sendPresetMessage('그렇다면 저희는 정석대로 즉시 인도명령 신청 및 점유이전금지 가처분을 실행하여 강제 집행 순서대로 진행하겠습니다.')"
+                                class="px-2.5 py-1.5 bg-slate-950 hover:bg-slate-800 text-[11px] text-slate-300 border border-slate-800 rounded-lg text-left truncate max-w-xs md:max-w-md transition-all">
+                                ⚔️ 강제집행 절차 경고 (단호한 대처)
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Message Send Form -->
+                    <form id="chat-form" onsubmit="handleChatSubmit(event)"
+                        class="flex gap-2 items-center pt-2 border-t border-slate-800/80">
+                        <input type="text" id="chat-input" placeholder="이 곤란한 점유자의 반발을 누그러뜨릴 현명한 대답을 입력해보세요..."
+                            class="flex-grow bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-xs md:text-sm text-slate-300 focus:outline-none focus:ring-1 focus:ring-emerald-500 transition-all">
+                        <button type="submit"
+                            class="px-4 py-3 bg-emerald-500 hover:bg-emerald-600 font-bold text-slate-950 text-xs md:text-sm rounded-xl transition-all shadow-md shadow-emerald-500/10 shrink-0">
+                            대화 전송
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer Area -->
+    <footer class="mt-12 bg-slate-900 border-t border-slate-800 py-8 px-6 text-slate-500 text-xs text-center">
+        <div class="max-w-7xl mx-auto space-y-3">
+            <p>© 2026 AuctionAgent AI Platform Inc. 본 프로토타입은 프론트앤드 바닐라 스크립트로 동작하는 정적 디자인 시안입니다.</p>
+            <p class="text-slate-600">안정적인 SQLite 관계형 DB 및 ChromaDB 인메모리 임베딩 백엔드 연결을 고려해 고도로 컴포넌트 추상화가 완료되어 있습니다.</p>
+        </div>
+    </footer>
+
+    <!-- INTERACTIVE SCRIPTS (Vanilla Javascript SPA Engine) -->
+    <script>
+        // Data Store Mockup
+        const auctionData = {
+            '2026타경12345': {
+                caseNo: '2026타경12345',
+                address: '서울 마포구 대흥동 마포아파트 104동 1202호',
+                appraisal: '1,000,000,000원',
+                minimumPrice: '640,000,000원',
+                summary: '유찰 2회',
+                rightsScore: 85,
+                rightsSummary: '말소기준권리 이후 소멸되지 않는 악성 선순위 가등기나 가처분이 발견되지 않았습니다. 입찰 후 보증금을 날릴 리스크가 매우 낮습니다.',
+                infra: { metro: '도보 4분 (280m)', school: '도보 5분 (340m)', park: '도보 3분 (180m)' }
+            },
+            '2026타경44912': {
+                caseNo: '2026타경44912',
+                address: '서울 서대문구 북아현동 북아현 하이츠빌라 B01호',
+                appraisal: '650,000,000원',
+                minimumPrice: '520,000,000원',
+                summary: '유찰 1회',
+                rightsScore: 98,
+                rightsSummary: '대항력 있는 임차인이 없으며 소유주 점유 상태로 명도 소송이나 보증금 인수 리스크가 완벽히 차단된 최상의 클린 물건입니다.',
+                infra: { metro: '도보 8분 (540m)', school: '도보 2분 (120m)', park: '도보 6분 (410m)' }
+            },
+            '2026타경88211': {
+                caseNo: '2026타경88211',
+                address: '서울 마포구 공덕동 명품팰리스 301호',
+                appraisal: '320,000,000원',
+                minimumPrice: '256,000,000원',
+                summary: '유찰 1회',
+                rightsScore: 92,
+                rightsSummary: '전형적인 근린 주거용 소액 물건으로 등기상 위험 요소가 아예 존재하지 않아 초보 경매 입문용으로 강력히 권장됩니다.',
+                infra: { metro: '도보 5분 (310m)', school: '도보 10분 (700m)', park: '도보 1분 (80m)' }
+            }
+        };
+
+        // SPA Navigation Router
+        function showPage(pageId) {
+            document.querySelectorAll('main > section').forEach(section => {
+                section.classList.add('hidden');
+            });
+            const target = document.getElementById(pageId);
+            if (target) {
+                target.classList.remove('hidden');
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Open Auction Report Detail
+        function openReport(caseId) {
+            const data = auctionData[caseId];
+            if (!data) return;
+
+            // Load values to detail DOM
+            document.getElementById('detail-case-badge').innerText = data.caseNo;
+            document.getElementById('detail-address-title').innerText = data.address;
+            document.getElementById('detail-rights-score').innerText = data.rightsScore;
+            document.getElementById('detail-rights-summary').innerText = data.rightsSummary;
+
+            // Infra load
+            document.getElementById('infra-metro').innerText = data.infra.metro;
+            document.getElementById('infra-school').innerText = data.infra.school;
+            document.getElementById('infra-park').innerText = data.infra.park;
+
+            // Open Page
+            showPage('page-report');
+            switchTab('tab-rights'); // Default sub-tab
+        }
+
+        // Sub Tab Controller
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.className = "tab-btn px-6 py-3 text-sm font-bold text-slate-400 hover:text-slate-200 border-b-2 border-transparent transition-all";
+            });
+
+            // Show active
+            document.getElementById(tabId).classList.remove('hidden');
+            document.getElementById(`btn-${tabId}`).className = "tab-btn px-6 py-3 text-sm font-bold border-b-2 border-emerald-500 text-emerald-400 transition-all";
+        }
+
+        // --- Tab 3: Interactive Yield & Price Oracle Engine ---
+        const slider = document.getElementById('slider-yield');
+        const valYield = document.getElementById('val-yield');
+        const valBiddingPrice = document.getElementById('val-bidding-price');
+        const costDeposit = document.getElementById('cost-deposit');
+        const costCash = document.getElementById('cost-cash');
+        const costTax = document.getElementById('cost-tax');
+        const costTotalCash = document.getElementById('cost-total-cash');
+        const probText = document.getElementById('probability-text');
+        const probBar = document.getElementById('probability-bar');
+
+        function updateBiddingFormula(yieldVal) {
+            // Formula modeling representing Math logic dynamically
+            // Safe range bidding simulation formula
+            const baseAppraisal = 1000000000; // 10억
+            const factor = 1 - (yieldVal / 100) * 1.5;
+            const targetPrice = Math.max(640000000, Math.round((baseAppraisal * factor) / 1000000) * 1000000);
+
+            // Format to KRW
+            valYield.innerText = `${yieldVal} %`;
+            valBiddingPrice.innerText = `${(targetPrice / 100000000).toFixed(2)} 억 원`;
+
+            // Calculate Sub-fees
+            const deposit = Math.round(targetPrice * 0.1);
+            const loan = Math.round(targetPrice * 0.7); // 70% LTV
+            const extraCashNeeded = targetPrice - deposit - loan;
+            const tax = Math.round(targetPrice * 0.022); // Acquisition Tax 2.2% approx
+            const totalCash = deposit + extraCashNeeded + tax;
+
+            costDeposit.innerText = `${deposit.toLocaleString()} 원`;
+            costCash.innerText = `${extraCashNeeded.toLocaleString()} 원`;
+            costTax.innerText = `${tax.toLocaleString()} 원`;
+            costTotalCash.innerText = `${totalCash.toLocaleString()} 원`;
+
+            // Adjust Probability inversely to Yield
+            let prob = 100 - (yieldVal - 5) * 4.2;
+            prob = Math.max(10, Math.min(99, Math.round(prob)));
+
+            probText.innerText = `${prob}% (${prob > 70 ? '매우 높음' : prob > 40 ? '보통' : '희박'})`;
+            probBar.style.width = `${prob}%`;
+            if (prob > 70) {
+                probText.className = "text-emerald-400 font-bold";
+                probBar.className = "bg-gradient-to-r from-emerald-500 to-blue-500 h-full rounded-full transition-all duration-300";
+            } else if (prob > 40) {
+                probText.className = "text-blue-400 font-bold";
+                probBar.className = "bg-gradient-to-r from-blue-500 to-amber-500 h-full rounded-full transition-all duration-300";
+            } else {
+                probText.className = "text-red-400 font-bold";
+                probBar.className = "bg-gradient-to-r from-amber-500 to-red-500 h-full rounded-full transition-all duration-300";
+            }
+        }
+
+        slider.addEventListener('input', (e) => {
+            updateBiddingFormula(parseInt(e.target.value));
+        });
+
+        // Initialize Slider view
+        updateBiddingFormula(10);
+
+
+        // --- Tab 4: Interactive AI Negotiation Chat Logic ---
+        const chatMessages = document.getElementById('chat-messages');
+        const chatInput = document.getElementById('chat-input');
+
+        let occupantAnger = 75;
+        let negotiationSuccess = 45;
+
+        function updateMetrics(angerChange, successChange) {
+            occupantAnger = Math.max(0, Math.min(100, occupantAnger + angerChange));
+            negotiationSuccess = Math.max(0, Math.min(100, negotiationSuccess + successChange));
+
+            document.getElementById('occupant-anger-rate').innerText = `${occupantAnger}%`;
+            document.getElementById('occupant-anger-bar').style.width = `${occupantAnger}%`;
+            document.getElementById('negotiation-success-rate').innerText = `${negotiationSuccess}%`;
+            document.getElementById('negotiation-success-bar').style.width = `${negotiationSuccess}%`;
+        }
+
+        function appendMessage(sender, text, isAI = false) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = "flex space-x-3 items-start animate-fadeIn";
+
+            if (isAI) {
+                messageDiv.innerHTML = `
+                    <div class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-xs font-bold text-slate-400 shrink-0">김</div>
+                    <div class="bg-slate-950 border border-slate-800 text-slate-300 p-3 rounded-2xl rounded-tl-none max-w-[80%] leading-relaxed">
+                        ${text}
+                    </div>
+                `;
+            } else {
+                messageDiv.className = "flex space-x-3 items-start justify-end animate-fadeIn";
+                messageDiv.innerHTML = `
+                    <div class="bg-emerald-500 text-slate-950 font-medium p-3 rounded-2xl rounded-tr-none max-w-[80%] leading-relaxed">
+                        ${text}
+                    </div>
+                    <div class="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center text-xs font-bold text-slate-950 shrink-0">나</div>
+                `;
+            }
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function handleChatSubmit(event) {
+            event.preventDefault();
+            const text = chatInput.value.trim();
+            if (!text) return;
+
+            appendMessage('user', text, false);
+            chatInput.value = '';
+
+            // Handle Simulated Dynamic AI Response based on keywords
+            setTimeout(() => {
+                let reply = '';
+                if (text.includes('이사비') || text.includes('돈')) {
+                    reply = "돈 몇백 푼 쥐여주고 내쫓으려고 하지 마쇼! 내 사정이 지금 얼마나 억울한데, 그 정도 이사비로는 갈 곳도 없어요.";
+                    updateMetrics(5, -2);
+                } else if (text.includes('인도명령') || text.includes('집행') || text.includes('법대로')) {
+                    reply = "결국 그렇게 나오시겠다? 맘대로 해봐요. 난 법이고 뭐고 끝까지 안 나가고 버틸 테니 집행관 데려오쇼 어디!";
+                    updateMetrics(15, -10);
+                } else if (text.includes('사정') || text.includes('안타깝') || text.includes('이해')) {
+                    reply = "안타깝다고 말로만 때우지 마시고 그럼 실질적인 대안을 주쇼. 보증금 다 떼이고 오갈 데 없는 사람 마음을 알기나 합니까?";
+                    updateMetrics(-10, 8);
+                } else {
+                    reply = "원하는 대로 순순히 풀리진 않을 겁니다. 협상다운 타협안을 제시하기 전까진 더 이상 할 말 없으니 가보세요.";
+                    updateMetrics(0, -1);
+                }
+                appendMessage('opponent', reply, true);
+            }, 1000);
+        }
+
+        function sendPresetMessage(text) {
+            appendMessage('user', text, false);
+
+            setTimeout(() => {
+                let reply = '';
+                if (text.includes('300만 원')) {
+                    reply = "300만 원이라... 솔직히 턱없이 부족하지만 그래도 대화로 풀 마음이 아예 없으신 건 아니구만요. 하지만 집행비용 생각하면 조금만 더 보장해 주쇼.";
+                    updateMetrics(-20, 20);
+                } else if (text.includes('강제 집행')) {
+                    reply = "협박하시는 겁니까? 나도 변호사랑 알아보고 있어요! 강제집행 계고 떨어져도 정지 가처분 신청 낼 테니까 두고 봅시다!";
+                    updateMetrics(20, -15);
+                }
+                appendMessage('opponent', reply, true);
+            }, 1000);
+        }
+    </script>
+</body>
+
+</html>

@@ -10,6 +10,7 @@ from __future__ import annotations
 import streamlit as st
 import quiz as quiz_module
 from src.common import init_page, check_api_key, ensure_db, render_footer, render_top_menu
+import textwrap
 
 def render_page():
     # 페이지 설정
@@ -19,12 +20,12 @@ def render_page():
     ensure_db()
 
     # 그라데이션 타이틀 배너
-    st.markdown("""
+    st.markdown(textwrap.dedent("""
     <div class="hero-container">
         <div class="hero-title">📝 사례 및 퀴즈 연습</div>
         <div class="hero-subtitle">가상 법원경매 매각물건명세서를 정밀하게 분석하여 권리분석 실력을 테스트하고, AI의 채점 및 맞춤형 피드백을 받으세요.</div>
     </div>
-    """, unsafe_allow_html=True)
+    """), unsafe_allow_html=True)
 
     # 퀴즈 선택 컨트롤 패널
     st.subheader("🎯 새로운 문제 출제")
@@ -63,22 +64,22 @@ def render_page():
         
         # 1. 물건 정보
         prop = q_data["property"]
-        st.markdown(f"""
-        <div style="background-color: #f8fafc; padding: 1.25rem; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 1.5rem;">
-            <span style="font-size: 1.05rem; font-weight: 700; color: #2d3748;">🏠 실물 물건 정보</span><br>
-            <div style="margin-top: 8px; font-size: 0.9rem; line-height: 1.6; color: #4a5568;">
+        st.markdown(textwrap.dedent(f"""
+        <div style="background-color: #0F172A; padding: 1.25rem; border-radius: 12px; border: 1px solid #1E293B; margin-bottom: 1.5rem;">
+            <span style="font-size: 1.05rem; font-weight: 700; color: #F8FAFC;">🏠 실물 물건 정보</span><br>
+            <div style="margin-top: 8px; font-size: 0.9rem; line-height: 1.6; color: #94A3B8;">
                 📍 <strong>소재지</strong>: {prop['location']}<br>
                 🏢 <strong>용도</strong>: {prop['type']} | 📐 <strong>면적</strong>: {prop['area_m2']}㎡<br>
-                💰 <strong>감정평가액</strong>: <span style="color: #2b6cb0; font-weight: 600;">{prop['appraisal_value']:,}원</span> | 📉 <strong>최저매각가격</strong>: <span style="color: #c53030; font-weight: 600;">{prop['minimum_bid_price']:,}원</span>
+                💰 <strong>감정평가액</strong>: <span style="color: #3B82F6; font-weight: 600;">{prop['appraisal_value']:,}원</span> | 📉 <strong>최저매각가격</strong>: <span style="color: #F87171; font-weight: 600;">{prop['minimum_bid_price']:,}원</span>
             </div>
         </div>
-        """, unsafe_allow_html=True)
+        """), unsafe_allow_html=True)
 
         # 2. 등기부 현황 (을구)
         st.markdown("##### 📜 등기사항전부증명서 (을구 순위 목록)")
         registry_entries = q_data["registry"]["entries"]
         
-        html_reg = """
+        html_reg = textwrap.dedent("""
         <table class="premium-table">
             <thead>
                 <tr>
@@ -89,18 +90,18 @@ def render_page():
                 </tr>
             </thead>
             <tbody>
-        """
+        """)
         for entry in registry_entries:
             amt = f" ({entry['amount']:,}원)" if "amount" in entry else ""
             details = entry.get("details", "-")
-            html_reg += f"""
+            html_reg += textwrap.dedent(f"""
                 <tr>
                     <td>{entry['date']}</td>
-                    <td><span style="background-color: #edf2f7; padding: 3px 8px; border-radius: 4px; font-size: 0.85em;">{entry['type']}</span></td>
+                    <td><span style="background-color: #1E293B; color: #F8FAFC; padding: 3px 8px; border-radius: 4px; font-size: 0.85em; border: 1px solid #334155;">{entry['type']}</span></td>
                     <td><strong>{entry['holder']}</strong>{amt}</td>
-                    <td><span style="color: #718096; font-size: 0.85em;">{details}</span></td>
+                    <td><span style="color: #94A3B8; font-size: 0.85em;">{details}</span></td>
                 </tr>
-            """
+            """)
         html_reg += "</tbody></table>"
         st.markdown(html_reg, unsafe_allow_html=True)
         
@@ -108,7 +109,7 @@ def render_page():
         st.markdown("##### 🏠 임차인 점유 및 보증금 현황")
         tenants = q_data.get("tenants", [])
         if tenants:
-            html_ten = """
+            html_ten = textwrap.dedent("""
             <table class="premium-table">
                 <thead>
                     <tr>
@@ -119,19 +120,19 @@ def render_page():
                     </tr>
                 </thead>
                 <tbody>
-            """
+            """)
             for t in tenants:
                 fixed = t.get("fixed_date") or "-"
                 dep = f"{t['deposit']:,}원"
                 rent = f" / {t['monthly_rent']:,}원" if t.get("monthly_rent") else ""
-                html_ten += f"""
+                html_ten += textwrap.dedent(f"""
                     <tr>
                         <td><strong>{t['name']}</strong></td>
                         <td>{t['registration_date']}</td>
                         <td>{fixed}</td>
                         <td><span style="color: #2b6cb0; font-weight: 500;">{dep}{rent}</span></td>
                     </tr>
-                """
+                """)
             html_ten += "</tbody></table>"
             st.markdown(html_ten, unsafe_allow_html=True)
         else:
@@ -142,20 +143,20 @@ def render_page():
         if special:
             st.markdown("##### ⚠️ 특수 권리 현황")
             for sc in special:
-                st.markdown(f"""
-                <div style="background-color: #fff5f5; border: 1px solid #feb2b2; border-radius: 8px; padding: 10px 15px; margin-bottom: 10px;">
-                    <span style="color: #c53030; font-weight: 700;">[특수권리] {sc['type']}</span> | 주장인: <strong>{sc['claimant']}</strong> | 주장금액: <strong>{sc['amount']:,}원</strong><br>
-                    <small style="color: #718096;">설명: {sc['details']}</small>
+                st.markdown(textwrap.dedent(f"""
+                <div style="background-color: rgba(239, 68, 68, 0.05); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 8px; padding: 10px 15px; margin-bottom: 10px;">
+                    <span style="color: #F87171; font-weight: 700;">[특수권리] {sc['type']}</span> | 주장인: <strong>{sc['claimant']}</strong> | 주장금액: <strong>{sc['amount']:,}원</strong><br>
+                    <small style="color: #94A3B8;">설명: {sc['details']}</small>
                 </div>
-                """, unsafe_allow_html=True)
+                """), unsafe_allow_html=True)
 
         # 5. 분석 과제 공지
-        st.markdown(f"""
-        <div style="background-color: #ebf8ff; border-left: 5px solid #3182ce; border-radius: 8px; padding: 1rem; margin: 1.5rem 0;">
-            <strong style="color: #2b6cb0; font-size: 1rem;">❓ 권리분석 미션</strong><br>
-            <span style="font-size: 0.95rem; line-height: 1.6; color: #2d3748;">{q_data['question']}</span>
+        st.markdown(textwrap.dedent(f"""
+        <div style="background-color: rgba(59, 130, 246, 0.05); border: 1px solid #1E293B; border-left: 5px solid #3B82F6; border-radius: 8px; padding: 1rem; margin: 1.5rem 0;">
+            <strong style="color: #60A5FA; font-size: 1rem;">❓ 권리분석 미션</strong><br>
+            <span style="font-size: 0.95rem; line-height: 1.6; color: #E2E8F0;">{q_data['question']}</span>
         </div>
-        """, unsafe_allow_html=True)
+        """), unsafe_allow_html=True)
 
         # 6. 답안 작성
         st.subheader("✍️ 내 답안 작성하기")
@@ -196,11 +197,11 @@ def render_page():
         # 채점 결과 출력
         if st.session_state.get("quiz_feedback"):
             st.success("🎉 채점이 완료되었습니다! 아래 피드백을 확인하세요.")
-            st.markdown("""
-            <div style="background-color: #fafafa; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; margin-top: 1rem; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);">
-                <h4 style="margin-top:0; color:#1a202c; border-bottom: 2px solid #edf2f7; padding-bottom: 8px;">🎓 AI 튜터의 모의고사 피드백</h4>
+            st.markdown(textwrap.dedent("""
+            <div style="background-color: #0F172A; border: 1px solid #1E293B; border-radius: 12px; padding: 1.5rem; margin-top: 1rem; box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);">
+                <h4 style="margin-top:0; color:#F8FAFC; border-bottom: 2px solid #1E293B; padding-bottom: 8px;">🎓 AI 튜터의 모의고사 피드백</h4>
             </div>
-            """, unsafe_allow_html=True)
+            """), unsafe_allow_html=True)
             st.markdown(st.session_state["quiz_feedback"])
             
             if st.button("✅ 피드백 확인 완료 (문제 닫기)", use_container_width=True):

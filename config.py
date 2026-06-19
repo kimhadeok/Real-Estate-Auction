@@ -14,6 +14,7 @@ load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent
 DATA_DIR = BASE_DIR / "data"
 CHROMA_DB_DIR = BASE_DIR / "chroma_db"
+PROMPTS_DIR = BASE_DIR / "prompts"
 
 # ─── ChromaDB 컬렉션명 ───
 COLLECTION_LAWS = "auction_laws"
@@ -33,6 +34,12 @@ LAWS_DIR = DATA_DIR / "laws"
 PROCEDURES_DIR = DATA_DIR / "procedures"
 GLOSSARY_PATH = DATA_DIR / "glossary" / "glossary.json"
 CASES_PATH = DATA_DIR / "cases" / "sample_cases.json"
+
+# ─── 프롬프트 로더 ───
+def load_prompt(filename: str) -> str:
+    """prompts 폴더에서 프롬프트 텍스트 파일을 읽어옵니다."""
+    prompt_path = PROMPTS_DIR / filename
+    return prompt_path.read_text(encoding="utf-8")
 
 # ─── LLM 설정 ───
 LLM_PROVIDER = os.getenv("LLM_PROVIDER", "openai").lower()

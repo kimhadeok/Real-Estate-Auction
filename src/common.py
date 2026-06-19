@@ -34,10 +34,9 @@ def init_page(title: str, icon: str):
     except Exception:
         pass
 
-    # 글로벌 프리미엄 CSS 테마 주입 (Outfit 및 Noto Sans KR 폰트, 호버 애니메이션, 그라데이션)
     st.markdown("""
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800&display=swap');
         
         /* 왼쪽 사이드바 기본 네비게이션 리스트 완전히 감추기 */
         [data-testid="sidebar-nav-container"], [data-testid="stSidebarNav"] {
@@ -46,18 +45,19 @@ def init_page(title: str, icon: str):
         
         /* 폰트 설정 */
         html, body, [class*="css"], .stMarkdown {
-            font-family: 'Outfit', 'Noto Sans KR', sans-serif !important;
+            font-family: 'Pretendard', sans-serif !important;
         }
         
         /* 그라데이션 히어로 배너 */
         .hero-container {
-            background: linear-gradient(135deg, #102a43 0%, #102a43 30%, #243b53 100%);
+            background: linear-gradient(to bottom right, #0F172A, #0F172A, rgba(30, 58, 138, 0.3));
             padding: 2.5rem 2rem;
             border-radius: 16px;
-            color: white;
+            color: #F8FAFC;
             margin-bottom: 2rem;
-            box-shadow: 0 10px 30px rgba(16, 42, 67, 0.15);
-            border-left: 6px solid #48bb78;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            border: 1px solid #1E293B;
+            border-left: 6px solid #10B981;
         }
         
         .hero-title {
@@ -65,12 +65,15 @@ def init_page(title: str, icon: str):
             font-weight: 800;
             margin-bottom: 0.5rem;
             letter-spacing: -0.5px;
+            background: linear-gradient(to right, #FFFFFF, #E2E8F0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
         
         .hero-subtitle {
             font-size: 1.05rem;
             font-weight: 300;
-            opacity: 0.85;
+            color: #94A3B8;
             line-height: 1.5;
         }
         
@@ -80,19 +83,19 @@ def init_page(title: str, icon: str):
             color: inherit !important;
         }
         .card-container {
-            background-color: #ffffff;
+            background-color: #0F172A;
             padding: 1.8rem;
             border-radius: 16px;
-            border: 1px solid #e2e8f0;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.01), 0 2px 4px -1px rgba(0,0,0,0.01);
+            border: 1px solid #1E293B;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
             transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             margin-bottom: 1rem;
             min-height: 180px;
         }
         .card-container:hover {
             transform: translateY(-5px);
-            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.05), 0 10px 10px -5px rgba(0,0,0,0.04);
-            border-color: #cbd5e0;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.5), 0 10px 10px -5px rgba(0,0,0,0.4);
+            border-color: #334155;
         }
         .card-icon {
             font-size: 2rem;
@@ -101,12 +104,12 @@ def init_page(title: str, icon: str):
         .card-title {
             font-size: 1.2rem;
             font-weight: 700;
-            color: #1a202c;
+            color: #F8FAFC;
             margin-bottom: 0.5rem;
         }
         .card-desc {
             font-size: 0.9rem;
-            color: #4a5568;
+            color: #94A3B8;
             line-height: 1.6;
         }
         
@@ -118,35 +121,36 @@ def init_page(title: str, icon: str):
             font-size: 0.85em;
             font-weight: 600;
             margin-bottom: 12px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
         }
         .badge-procedure {
-            background-color: #ebf8ff;
-            color: #2b6cb0;
-            border: 1px solid #bee3f8;
+            background-color: rgba(59, 130, 246, 0.1);
+            color: #60A5FA;
+            border: 1px solid rgba(59, 130, 246, 0.2);
         }
         .badge-tutor {
-            background-color: #e6fffa;
-            color: #319795;
-            border: 1px solid #b2f5ea;
+            background-color: rgba(16, 185, 129, 0.1);
+            color: #34D399;
+            border: 1px solid rgba(16, 185, 129, 0.2);
         }
         .badge-quiz {
-            background-color: #fff5f5;
-            color: #c53030;
-            border: 1px solid #fed7d7;
+            background-color: rgba(239, 68, 68, 0.1);
+            color: #F87171;
+            border: 1px solid rgba(239, 68, 68, 0.2);
         }
         
         /* 디스클레이머 */
         .disclaimer {
-            background-color: #fffaf0;
-            border-left: 5px solid #dd6b20;
+            background-color: rgba(245, 158, 11, 0.05);
+            border-left: 5px solid #F59E0B;
             border-radius: 8px;
             padding: 14px 18px;
             margin-bottom: 20px;
             font-size: 0.9rem;
-            color: #c05621;
+            color: #F59E0B;
             line-height: 1.6;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.01);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            border-left: 5px solid #F59E0B;
         }
         
         /* 하단 푸터 */
@@ -155,8 +159,8 @@ def init_page(title: str, icon: str):
             padding: 2rem 0;
             margin-top: 4rem;
             font-size: 0.8rem;
-            color: #718096;
-            border-top: 1px solid #e2e8f0;
+            color: #64748B;
+            border-top: 1px solid #1E293B;
         }
         
         /* 테이블 프리미엄 스타일 */
@@ -164,22 +168,42 @@ def init_page(title: str, icon: str):
             width: 100%;
             border-collapse: collapse;
             margin: 1rem 0;
+            background-color: #0F172A;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #1E293B;
         }
         .premium-table th {
-            background-color: #f7fafc;
-            color: #4a5568;
+            background-color: #020617;
+            color: #94A3B8;
             font-weight: 600;
             padding: 12px 16px;
-            border-bottom: 2px solid #e2e8f0;
+            border-bottom: 2px solid #1E293B;
             text-align: left;
         }
         .premium-table td {
             padding: 12px 16px;
-            border-bottom: 1px solid #edf2f7;
-            color: #2d3748;
+            border-bottom: 1px solid #1E293B;
+            color: #E2E8F0;
         }
         .premium-table tr:hover {
-            background-color: #f8fafc;
+            background-color: #1E293B;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #020617;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1E293B;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #334155;
         }
     </style>
     """, unsafe_allow_html=True)
