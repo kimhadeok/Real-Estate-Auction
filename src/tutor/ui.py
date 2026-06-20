@@ -13,8 +13,8 @@ import agents
 def render_page():
     # 페이지 설정
     init_page("권리분석 튜터 | AI 튜터", "📚")
-    render_top_menu()
     check_api_key()
+    render_top_menu()
     ensure_db()
 
     # 그라데이션 타이틀 배너

@@ -14,6 +14,11 @@ import os
 import streamlit as st
 import config
 
+def is_app2_mode() -> bool:
+    """sys.argv에 app2.py가 인자로 전달되었는지 확인하여 구동 모드를 감지합니다."""
+    import sys
+    return any("app2.py" in arg for arg in sys.argv)
+
 def secrets_bridge():
     """Streamlit Cloud Secrets를 로컬 환경변수로 동기화합니다."""
     try:
@@ -378,19 +383,85 @@ def ensure_db():
 
 def check_api_key():
     """필수 API 키 입력 상태를 유효성 검증합니다."""
-    if config.LLM_PROVIDER == "openai" and not config.OPENAI_API_KEY:
-        st.error(
-            "🔑 **OpenAI API Key 미설정 오류**\n\n"
-            "프로젝트 루트의 `.env` 파일에 `OPENAI_API_KEY=your-key`를 설정해 주시거나, "
-            "Streamlit Cloud 배포의 경우 APP 설정 내 Secrets에 환경변수 키를 입력해 주세요."
-        )
-        st.stop()
-    elif config.LLM_PROVIDER == "anthropic" and not config.ANTHROPIC_API_KEY:
-        st.error(
-            "🔑 **Anthropic API Key 미설정 오류**\n\n"
-            "프로젝트 루트의 `.env` 파일에 `ANTHROPIC_API_KEY=your-key`를 설정해 주세요."
-        )
-        st.stop()
+    import os
+    
+    # app.py 모드일 때 최초 진입 시 기존 .env에서 읽어왔을 수 있는 키를 강제 공백 리셋
+    if not is_app2_mode() and "api_key_initialized" not in st.session_state:
+        config.OPENAI_API_KEY = ""
+        config.ANTHROPIC_API_KEY = ""
+        if "OPENAI_API_KEY" in os.environ:
+            os.environ["OPENAI_API_KEY"] = ""
+        if "ANTHROPIC_API_KEY" in os.environ:
+            os.environ["ANTHROPIC_API_KEY"] = ""
+        st.session_state["api_key_initialized"] = True
+
+    if is_app2_mode():
+        # app2.py 모드: .env 설정만 로드
+        if config.LLM_PROVIDER == "openai" and not config.OPENAI_API_KEY:
+            st.error(
+                "🔑 **OpenAI API Key 미설정 오류**\n\n"
+                "프로젝트 루트의 `.env` 파일에 `OPENAI_API_KEY=your-key`를 설정해 주세요."
+            )
+            st.stop()
+        elif config.LLM_PROVIDER == "anthropic" and not config.ANTHROPIC_API_KEY:
+            st.error(
+                "🔑 **Anthropic API Key 미설정 오류**\n\n"
+                "프로젝트 루트의 `.env` 파일에 `ANTHROPIC_API_KEY=your-key`를 설정해 주세요."
+            )
+            st.stop()
+    else:
+        # app.py 모드: 화면 최상단 본문 입력 유도
+        provider = config.LLM_PROVIDER
+        active_key = config.OPENAI_API_KEY if provider == "openai" else config.ANTHROPIC_API_KEY
+        
+        # 1. API Key가 설정되지 않은 최초 단계
+        if not active_key:
+            st.warning(f"🔑 **{provider.upper()} API Key 미설정**")
+            st.info("🏛️ 부동산 경매 AI 튜터 플랫폼 이용을 위해 아래에 API Key를 기입해 주시기 바랍니다.")
+            
+            with st.form("api_key_initial_form"):
+                label = "OpenAI API Key 입력" if provider == "openai" else "Anthropic API Key 입력"
+                ph = "sk-..." if provider == "openai" else "sk-ant-..."
+                inline_key = st.text_input(label, value="", type="password", placeholder=ph)
+                submit_key = st.form_submit_button("🔑 키 등록 및 활성화")
+                
+            if submit_key and inline_key.strip():
+                user_key = inline_key.strip()
+                if provider == "openai":
+                    st.session_state["openai_api_key"] = user_key
+                    config.OPENAI_API_KEY = user_key
+                    os.environ["OPENAI_API_KEY"] = user_key
+                elif provider == "anthropic":
+                    st.session_state["anthropic_api_key"] = user_key
+                    config.ANTHROPIC_API_KEY = user_key
+                    os.environ["ANTHROPIC_API_KEY"] = user_key
+                st.rerun()
+                
+            st.stop()
+            
+        # 2. API Key가 이미 설정되어 원활히 구동되는 단계 (GNB보다 위에 접이식 아코디언 제공)
+        else:
+            with st.expander(f"🔑 API Key 설정 및 재설정 (현재: {provider.upper()} 적용 중)", expanded=False):
+                with st.form("api_key_reset_form"):
+                    label = "새로운 OpenAI API Key 입력" if provider == "openai" else "새로운 Anthropic API Key 입력"
+                    default_key = st.session_state.get("openai_api_key" if provider == "openai" else "anthropic_api_key", active_key)
+                    new_key_input = st.text_input(label, value=default_key, type="password")
+                    col_apply, _ = st.columns([1, 4])
+                    with col_apply:
+                        apply_btn = st.form_submit_button("🔄 변경 적용")
+                        
+                if apply_btn:
+                    cleaned_key = new_key_input.strip()
+                    if provider == "openai":
+                        st.session_state["openai_api_key"] = cleaned_key
+                        config.OPENAI_API_KEY = cleaned_key
+                        os.environ["OPENAI_API_KEY"] = cleaned_key
+                    elif provider == "anthropic":
+                        st.session_state["anthropic_api_key"] = cleaned_key
+                        config.ANTHROPIC_API_KEY = cleaned_key
+                        os.environ["ANTHROPIC_API_KEY"] = cleaned_key
+                    st.success("✅ API Key가 동적으로 업데이트되었습니다.")
+                    st.rerun()
 
 def get_agent_badge(route: str, agent_name: str) -> str:
     """답변 창에 노출되는 에이전트 전용 HTML 배지를 빌드합니다."""
@@ -418,8 +489,9 @@ def render_top_menu():
     
     # 7개 열의 너비를 재분배 — AI 입찰가 예측 메뉴 추가
     cols = st.columns([2.0, 2.0, 1.9, 1.9, 1.9, 2.1, 0.6])
+    home_file = "app2.py" if is_app2_mode() else "app.py"
     with cols[0]:
-        st.page_link("app.py", label="🏛️ HOME", use_container_width=True)
+        st.page_link(home_file, label="🏛️ HOME", use_container_width=True)
     with cols[1]:
         st.page_link("pages/auction_procedure.py", label="📋 경매 절차 안내", use_container_width=True)
     with cols[2]:

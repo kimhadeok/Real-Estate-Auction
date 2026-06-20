@@ -14,7 +14,7 @@ import hashlib
 import json
 
 import streamlit as st
-from src.core.common import init_page, render_top_menu, render_footer
+from src.core.common import init_page, check_api_key, render_top_menu, render_footer
 from src.price_oracle.engine import PriceOracleEngine
 
 # ──────────────────────────────────────────
@@ -283,6 +283,7 @@ def _render_result_section(result: dict) -> None:
 def render_page() -> None:
     """AI 입찰가 예측 페이지 전체를 렌더링합니다."""
     init_page("AI 입찰가 예측 — 경매 AI 튜터", "💰")
+    check_api_key()
     render_top_menu()
 
     inputs = _render_input_section()

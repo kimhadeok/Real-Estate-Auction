@@ -15,8 +15,8 @@ import textwrap
 def render_page():
     # 페이지 설정
     init_page("사례 퀴즈 연습 | AI 튜터", "📝")
-    render_top_menu()
     check_api_key()
+    render_top_menu()
     ensure_db()
 
     # 그라데이션 타이틀 배너
