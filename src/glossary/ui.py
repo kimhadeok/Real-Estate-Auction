@@ -10,7 +10,7 @@ from __future__ import annotations
 import streamlit as st
 import config
 import json
-from src.common import init_page, check_api_key, ensure_db, render_footer, render_top_menu
+from src.core.common import init_page, check_api_key, ensure_db, render_footer, render_top_menu
 
 def get_chosung(word: str) -> str:
     if not word:

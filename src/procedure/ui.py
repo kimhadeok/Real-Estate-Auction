@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import streamlit as st
 import config
-from src.common import init_page, check_api_key, ensure_db, get_agent_badge, render_footer, render_top_menu
+from src.core.common import init_page, check_api_key, ensure_db, get_agent_badge, render_footer, render_top_menu
 import agents
 
 def render_page():

@@ -6,6 +6,10 @@ src/common.py — 공통 레이아웃 및 헬퍼 함수
 
 from __future__ import annotations
 
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
 import os
 import streamlit as st
 import config

@@ -10,9 +10,10 @@ cli.py — 터미널 테스트 도구
 from __future__ import annotations
 
 import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import router
-
 
 def main():
     if len(sys.argv) < 2:

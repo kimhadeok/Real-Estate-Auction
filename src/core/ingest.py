@@ -11,12 +11,13 @@ ingest.py — clause-aware 청킹 + ChromaDB 4개 컬렉션 구축
 
 from __future__ import annotations
 
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
 import argparse
 import json
 import re
-import sys
-from pathlib import Path
-
 import config
 
 

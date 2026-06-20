@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import streamlit as st
 import quiz as quiz_module
-from src.common import init_page, check_api_key, ensure_db, render_footer, render_top_menu
+from src.core.common import init_page, check_api_key, ensure_db, render_footer, render_top_menu
 import textwrap
 
 def render_page():
@@ -154,7 +154,7 @@ def render_page():
         st.markdown(textwrap.dedent(f"""
         <div style="background-color: rgba(59, 130, 246, 0.05); border: 1px solid #1E293B; border-left: 5px solid #3B82F6; border-radius: 8px; padding: 1rem; margin: 1.5rem 0;">
             <strong style="color: #60A5FA; font-size: 1rem;">❓ 권리분석 미션</strong><br>
-            <span style="font-size: 0.95rem; line-height: 1.6; color: #E2E8F0;">{q_data['question']}</span>
+            <span style="font-size: 0.95rem; line-height: 1.6; color: #6C727E;">{q_data['question']}</span>
         </div>
         """), unsafe_allow_html=True)
 

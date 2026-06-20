@@ -9,11 +9,15 @@ app.py — 메인 홈페이지 랜딩 화면
 
 from __future__ import annotations
 
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent / "src" / "core"))
+
 import streamlit as st
 import config
 import json
 import base64
-from src.common import init_page, check_api_key, ensure_db, render_footer, render_top_menu
+from src.core.common import init_page, check_api_key, ensure_db, render_footer, render_top_menu
 
 def main():
     # 페이지 초기 설정 및 공통 스타일 주입

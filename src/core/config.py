@@ -11,7 +11,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # ─── 프로젝트 경로 ───
-BASE_DIR = Path(__file__).resolve().parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 DATA_DIR = BASE_DIR / "data"
 CHROMA_DB_DIR = BASE_DIR / "chroma_db"
 PROMPTS_DIR = BASE_DIR / "prompts"

@@ -13,6 +13,7 @@ from pathlib import Path
 ROOT_DIR = Path(__file__).resolve().parent.parent
 if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
+sys.path.insert(0, str(ROOT_DIR / "src" / "core"))
 
 # 캐시된 모듈 강제 리로드로 핫리로드 활성화
 if "src.glossary.ui" in sys.modules:
