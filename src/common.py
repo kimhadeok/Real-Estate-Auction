@@ -19,6 +19,325 @@ def secrets_bridge():
     except Exception:
         pass
 
+# ── 전역 CSS 문자열 (모듈 로드 시 1회 구성) ──────────────────────────────────
+# Tailwind CDN(~350KB JS)은 커스텀 CSS와 기능이 중복되므로 제거했습니다.
+# Google Fonts는 아래 <style> @import로 처리합니다.
+_GLOBAL_CSS = """
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
+    
+    :root {
+        --primary: #2563eb;
+        --secondary: #0d9488;
+        --accent: #fb7185;
+        --warning: #f59e0b;
+        --dark: #0f172a;
+        --light: #f8fafc;
+        --success: #10B981;
+    }
+
+    /* GNB 가로정렬 강제 조정 및 최상위 컴포넌트 덮어쓰기 */
+    html body [data-testid="stAppViewContainer"] [data-testid="stHorizontalBlock"] {
+        align-items: center !important;
+        background-color: #ffffff !important;
+        padding: 16px 20px !important;
+        border-radius: 24px !important;
+        box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.05), 0 4px 12px -2px rgba(0, 0, 0, 0.02) !important;
+        border: 1px solid #e2e8f0 !important;
+        margin-bottom: 2.5rem !important;
+    }
+    
+    /* 3x GNB 텍스트 크기 확대 오버라이드 */
+    html body [data-testid="stAppViewContainer"] [data-testid="stPageLink"] *,
+    html body [data-testid="stAppViewContainer"] .stPageLink *,
+    .stPageLink * {
+        font-size: 1.58rem !important;
+        font-weight: 900 !important;
+        letter-spacing: -0.5px !important;
+        white-space: nowrap !important;
+        line-height: 1.1 !important;
+    }
+    
+    html body [data-testid="stAppViewContainer"] [data-testid="stPageLink"] > a,
+    html body [data-testid="stAppViewContainer"] [data-testid="stPageLink"] > button,
+    .stPageLink > a,
+    .stPageLink > button {
+        border-radius: 14px !important;
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+        padding: 10px 18px !important;
+        border: 1.5px solid #cbd5e1 !important;
+        background-color: #ffffff !important;
+        color: #0f172a !important;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04) !important;
+        text-align: center !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        text-decoration: none !important;
+    }
+    
+    /* 호버 시 세련된 그라데이션 및 입체 피드백 */
+    html body [data-testid="stAppViewContainer"] [data-testid="stPageLink"] > a:hover,
+    html body [data-testid="stAppViewContainer"] [data-testid="stPageLink"] > button:hover,
+    .stPageLink > a:hover,
+    .stPageLink > button:hover {
+        color: #0d9488 !important;
+        border-color: #0d9488 !important;
+        background: linear-gradient(135deg, rgba(37, 99, 235, 0.04) 0%, rgba(13, 148, 136, 0.06) 100%) !important;
+        transform: translateY(-3px) !important;
+        box-shadow: 0 15px 30px rgba(13, 148, 136, 0.14) !important;
+    }
+    
+    html body [data-testid="stAppViewContainer"] [data-testid="stPageLink"] > a:hover *,
+    html body [data-testid="stAppViewContainer"] [data-testid="stPageLink"] > button:hover *,
+    .stPageLink > a:hover *,
+    .stPageLink > button:hover * {
+        color: #0d9488 !important;
+    }
+
+    /* 활성 포커스 해제 및 클릭 액션 */
+    html body [data-testid="stAppViewContainer"] [data-testid="stPageLink"] > a:focus,
+    html body [data-testid="stAppViewContainer"] [data-testid="stPageLink"] > a:active,
+    html body [data-testid="stAppViewContainer"] [data-testid="stPageLink"] > button:focus,
+    html body [data-testid="stAppViewContainer"] [data-testid="stPageLink"] > button:active,
+    .stPageLink > a:focus,
+    .stPageLink > button:focus {
+        border-color: #0d9488 !important;
+        box-shadow: 0 0 0 4px rgba(13, 148, 136, 0.2) !important;
+    }
+
+    /* 반응형 GNB 텍스트 스케일 다운 */
+    @media (max-width: 1600px) {
+        html body [data-testid="stAppViewContainer"] [data-testid="stPageLink"] *,
+        html body [data-testid="stAppViewContainer"] .stPageLink *,
+        .stPageLink * {
+            font-size: 1.3rem !important;
+            letter-spacing: -0.4px !important;
+        }
+        html body [data-testid="stAppViewContainer"] [data-testid="stPageLink"] > a,
+        html body [data-testid="stAppViewContainer"] [data-testid="stPageLink"] > button,
+        .stPageLink > a,
+        .stPageLink > button {
+            padding: 8px 14px !important;
+        }
+    }
+    @media (max-width: 1200px) {
+        html body [data-testid="stAppViewContainer"] [data-testid="stPageLink"] *,
+        html body [data-testid="stAppViewContainer"] .stPageLink *,
+        .stPageLink * {
+            font-size: 1.15rem !important;
+            letter-spacing: -0.3px !important;
+        }
+        html body [data-testid="stAppViewContainer"] [data-testid="stPageLink"] > a,
+        html body [data-testid="stAppViewContainer"] [data-testid="stPageLink"] > button,
+        .stPageLink > a,
+        .stPageLink > button {
+            padding: 6px 12px !important;
+        }
+    }
+    @media (max-width: 768px) {
+        html body [data-testid="stAppViewContainer"] [data-testid="stPageLink"] *,
+        html body [data-testid="stAppViewContainer"] .stPageLink *,
+        .stPageLink * {
+            font-size: 0.95rem !important;
+            letter-spacing: -0.2px !important;
+        }
+        html body [data-testid="stAppViewContainer"] [data-testid="stPageLink"] > a,
+        html body [data-testid="stAppViewContainer"] [data-testid="stPageLink"] > button,
+        .stPageLink > a,
+        .stPageLink > button {
+            padding: 5px 10px !important;
+        }
+    }
+
+    /* 왼쪽 사이드바 기본 네비게이션 리스트 완전히 감추기 */
+    [data-testid="sidebar-nav-container"], [data-testid="stSidebarNav"] {
+        display: none !important;
+    }
+    
+    /* 폰트 설정 */
+    html, body, [class*="css"], .stMarkdown {
+        font-family: 'Noto Sans KR', 'Inter', sans-serif !important;
+    }
+    
+    /* 그라데이션 히어로 배너 */
+    .hero-container {
+        background: linear-gradient(135deg, #f1f5f9 0%, #ffffff 100%);
+        padding: 3rem 2rem;
+        border-radius: 20px;
+        color: #0f172a;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        border: 1px solid #e2e8f0;
+        border-left: 6px solid var(--secondary);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .hero-title {
+        font-size: 2.5rem;
+        font-weight: 900;
+        margin-bottom: 0.75rem;
+        letter-spacing: -0.5px;
+        background: linear-gradient(to right, #0f172a, #334155);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    
+    .hero-subtitle {
+        font-size: 1.1rem;
+        font-weight: 400;
+        color: #475569;
+        line-height: 1.6;
+    }
+    
+    /* 홈페이지형 퀵 메뉴 카드 */
+    .card-link {
+        text-decoration: none !important;
+        color: inherit !important;
+    }
+    .card-container {
+        background-color: #ffffff;
+        padding: 2rem;
+        border-radius: 20px;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        margin-bottom: 1rem;
+        min-height: 190px;
+    }
+    .card-container:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+        border-color: var(--secondary);
+    }
+    .card-icon {
+        font-size: 2.2rem;
+        margin-bottom: 0.8rem;
+    }
+    .card-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #0f172a;
+        margin-bottom: 0.5rem;
+    }
+    .card-desc {
+        font-size: 0.95rem;
+        color: #475569;
+        line-height: 1.6;
+    }
+    
+    /* 에이전트 배지 스타일링 */
+    .agent-badge {
+        display: inline-block;
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 0.85em;
+        font-weight: 600;
+        margin-bottom: 12px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    .badge-procedure {
+        background-color: rgba(37, 99, 235, 0.08);
+        color: #1d4ed8;
+        border: 1px solid rgba(37, 99, 235, 0.2);
+    }
+    .badge-tutor {
+        background-color: rgba(13, 148, 136, 0.08);
+        color: #0f766e;
+        border: 1px solid rgba(13, 148, 136, 0.2);
+    }
+    .badge-quiz {
+        background-color: rgba(225, 29, 72, 0.08);
+        color: #be123c;
+        border: 1px solid rgba(225, 29, 72, 0.2);
+    }
+    
+    /* 디스클레이머 */
+    .disclaimer {
+        background-color: rgba(217, 119, 6, 0.04);
+        border-left: 5px solid var(--warning);
+        border-radius: 8px;
+        padding: 14px 18px;
+        margin-bottom: 20px;
+        font-size: 0.9rem;
+        color: #b45309;
+        line-height: 1.6;
+        border: 1px solid rgba(217, 119, 6, 0.15);
+    }
+    
+    /* 하단 푸터 */
+    .custom-footer {
+        text-align: center;
+        padding: 2.5rem 0;
+        margin-top: 4rem;
+        font-size: 0.85rem;
+        color: #64748B;
+        border-top: 1px solid #e2e8f0;
+    }
+    
+    /* 테이블 프리미엄 스타일 */
+    .premium-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1rem 0;
+        background-color: #ffffff;
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1px solid #e2e8f0;
+    }
+    .premium-table th {
+        background-color: #f1f5f9;
+        color: #475569;
+        font-weight: 600;
+        padding: 12px 16px;
+        border-bottom: 2px solid #e2e8f0;
+        text-align: left;
+    }
+    .premium-table td {
+        padding: 12px 16px;
+        border-bottom: 1px solid #e2e8f0;
+        color: #0f172a;
+    }
+    .premium-table tr:hover {
+        background-color: #f8fafc;
+    }
+    
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+        background: #f1f5f9;
+    }
+    ::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+    }
+    
+    /* 4단계 멀티에이전트 워크플로우 화살표 스타일 */
+    .flow-arrow-horizontal {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        font-weight: bold;
+        min-width: 20px;
+    }
+    @media (max-width: 992px) {
+        .flow-arrow-horizontal {
+            transform: rotate(90deg);
+            margin: 0.5rem auto;
+            min-height: 30px;
+        }
+    }
+</style>
+"""
+
 def init_page(title: str, icon: str):
     """페이지 초기 설정 및 글로벌 프리미엄 테마 CSS를 적용합니다."""
     secrets_bridge()
@@ -34,179 +353,15 @@ def init_page(title: str, icon: str):
     except Exception:
         pass
 
-    st.markdown("""
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800&display=swap');
-        
-        /* 왼쪽 사이드바 기본 네비게이션 리스트 완전히 감추기 */
-        [data-testid="sidebar-nav-container"], [data-testid="stSidebarNav"] {
-            display: none !important;
-        }
-        
-        /* 폰트 설정 */
-        html, body, [class*="css"], .stMarkdown {
-            font-family: 'Pretendard', sans-serif !important;
-        }
-        
-        /* 그라데이션 히어로 배너 */
-        .hero-container {
-            background: linear-gradient(to bottom right, #0F172A, #0F172A, rgba(30, 58, 138, 0.3));
-            padding: 2.5rem 2rem;
-            border-radius: 16px;
-            color: #F8FAFC;
-            margin-bottom: 2rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-            border: 1px solid #1E293B;
-            border-left: 6px solid #10B981;
-        }
-        
-        .hero-title {
-            font-size: 2.2rem;
-            font-weight: 800;
-            margin-bottom: 0.5rem;
-            letter-spacing: -0.5px;
-            background: linear-gradient(to right, #FFFFFF, #E2E8F0);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        .hero-subtitle {
-            font-size: 1.05rem;
-            font-weight: 300;
-            color: #94A3B8;
-            line-height: 1.5;
-        }
-        
-        /* 홈페이지형 퀵 메뉴 카드 */
-        .card-link {
-            text-decoration: none !important;
-            color: inherit !important;
-        }
-        .card-container {
-            background-color: #0F172A;
-            padding: 1.8rem;
-            border-radius: 16px;
-            border: 1px solid #1E293B;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            margin-bottom: 1rem;
-            min-height: 180px;
-        }
-        .card-container:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.5), 0 10px 10px -5px rgba(0,0,0,0.4);
-            border-color: #334155;
-        }
-        .card-icon {
-            font-size: 2rem;
-            margin-bottom: 0.8rem;
-        }
-        .card-title {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #F8FAFC;
-            margin-bottom: 0.5rem;
-        }
-        .card-desc {
-            font-size: 0.9rem;
-            color: #94A3B8;
-            line-height: 1.6;
-        }
-        
-        /* 에이전트 배지 스타일링 */
-        .agent-badge {
-            display: inline-block;
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 0.85em;
-            font-weight: 600;
-            margin-bottom: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-        }
-        .badge-procedure {
-            background-color: rgba(59, 130, 246, 0.1);
-            color: #60A5FA;
-            border: 1px solid rgba(59, 130, 246, 0.2);
-        }
-        .badge-tutor {
-            background-color: rgba(16, 185, 129, 0.1);
-            color: #34D399;
-            border: 1px solid rgba(16, 185, 129, 0.2);
-        }
-        .badge-quiz {
-            background-color: rgba(239, 68, 68, 0.1);
-            color: #F87171;
-            border: 1px solid rgba(239, 68, 68, 0.2);
-        }
-        
-        /* 디스클레이머 */
-        .disclaimer {
-            background-color: rgba(245, 158, 11, 0.05);
-            border-left: 5px solid #F59E0B;
-            border-radius: 8px;
-            padding: 14px 18px;
-            margin-bottom: 20px;
-            font-size: 0.9rem;
-            color: #F59E0B;
-            line-height: 1.6;
-            border: 1px solid rgba(245, 158, 11, 0.2);
-            border-left: 5px solid #F59E0B;
-        }
-        
-        /* 하단 푸터 */
-        .custom-footer {
-            text-align: center;
-            padding: 2rem 0;
-            margin-top: 4rem;
-            font-size: 0.8rem;
-            color: #64748B;
-            border-top: 1px solid #1E293B;
-        }
-        
-        /* 테이블 프리미엄 스타일 */
-        .premium-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 1rem 0;
-            background-color: #0F172A;
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid #1E293B;
-        }
-        .premium-table th {
-            background-color: #020617;
-            color: #94A3B8;
-            font-weight: 600;
-            padding: 12px 16px;
-            border-bottom: 2px solid #1E293B;
-            text-align: left;
-        }
-        .premium-table td {
-            padding: 12px 16px;
-            border-bottom: 1px solid #1E293B;
-            color: #E2E8F0;
-        }
-        .premium-table tr:hover {
-            background-color: #1E293B;
-        }
-        
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #020617;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #1E293B;
-            border-radius: 3px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #334155;
-        }
-    </style>
-    """, unsafe_allow_html=True)
+    # ── CSS 주입 ─────────────────────────────────────────────────────
+    # Streamlit은 페이지 이동 시 DOM을 완전히 새로 그립니다.
+    # session_state는 유지되지만 이전에 주입한 CSS는 DOM에서 사라지므로,
+    # 캐싱 없이 매 렌더링마다 주입합니다.
+    # ※ Tailwind CDN(~350KB)은 이미 제거했으므로 순수 CSS(~8KB) 재주입
+    #   비용은 미미하며, Google Fonts는 브라우저 캐시가 처리합니다.
+    st.markdown(_GLOBAL_CSS, unsafe_allow_html=True)
+
+
 
 def ensure_db():
     """ChromaDB 로컬 디렉터리가 없으면 자동으로 빌드를 작동시킵니다."""
@@ -256,29 +411,18 @@ def render_footer():
 
 def render_top_menu():
     """상단 가로형 네비게이션 메뉴바를 렌더링합니다."""
-    st.markdown("""
-    <style>
-        /* 각 버튼 간의 간격 조정 및 호버 스타일링 */
-        .stPageLink > a {
-            font-weight: 600 !important;
-            border-radius: 8px !important;
-            transition: all 0.2s ease-in-out !important;
-            padding: 8px 12px !important;
-        }
-        .stPageLink > a:hover {
-            color: #48bb78 !important;
-            border: 1px solid #48bb78 !important;
-        }
-    </style>
-    """, unsafe_allow_html=True)
     
-    # 5개 열을 정의하여 메뉴 버튼들을 가로로 나열
-    cols = st.columns([1.5, 1.2, 1.2, 1.2, 3.1])
+    # 7개 열의 너비를 재분배 — AI 입찰가 예측 메뉴 추가
+    cols = st.columns([2.0, 2.0, 1.9, 1.9, 1.9, 2.1, 0.6])
     with cols[0]:
-        st.page_link("app.py", label="🏛️ 경매 AI 튜터 홈", use_container_width=True)
+        st.page_link("app.py", label="🏛️ HOME", use_container_width=True)
     with cols[1]:
-        st.page_link("pages/1_📋_경매_절차_안내.py", label="📋 경매 절차 안내", use_container_width=True)
+        st.page_link("pages/경매_절차_안내.py", label="📋 경매 절차 안내", use_container_width=True)
     with cols[2]:
-        st.page_link("pages/2_📚_권리분석_튜터.py", label="📚 권리분석 튜터", use_container_width=True)
+        st.page_link("pages/권리분석_튜터.py", label="📚 권리분석 튜터", use_container_width=True)
     with cols[3]:
-        st.page_link("pages/3_📝_사례_퀴즈_연습.py", label="📝 사례 퀴즈 연습", use_container_width=True)
+        st.page_link("pages/사례_퀴즈_연습.py", label="📝 사례 퀴즈 연습", use_container_width=True)
+    with cols[4]:
+        st.page_link("pages/경매_용어_사전.py", label="🔍 경매 용어 사전", use_container_width=True)
+    with cols[5]:
+        st.page_link("pages/AI_입찰가_예측.py", label="💰 AI 입찰가 예측", use_container_width=True)

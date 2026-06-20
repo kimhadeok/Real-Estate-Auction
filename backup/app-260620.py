@@ -11,11 +11,12 @@ from __future__ import annotations
 import streamlit as st
 import config
 import json
-from src.common import init_page, check_api_key, ensure_db, render_footer
+from src.common import init_page, check_api_key, ensure_db, render_footer, render_top_menu
 
 def main():
     # 페이지 초기 설정 및 공통 스타일 주입
     init_page("부동산 경매 AI 튜터 | 홈", "🏛️")
+    render_top_menu()
     check_api_key()
     ensure_db()
 
@@ -147,11 +148,6 @@ def main():
         st.metric("Embedding Provider", config.EMBEDDING_PROVIDER.upper())
     with dash_cols[3]:
         st.metric("Vector DB Status", db_badge)
-
-    # 사이드바 가이드
-    st.sidebar.title("🏛️ 경매 AI 튜터")
-    st.sidebar.caption("RAG기반 법원경매 학습도우미")
-    st.sidebar.info("왼쪽의 사이드바 페이지 리스트 혹은 메인의 카드 단추를 눌러 원하시는 전용 서비스실로 이동하실 수 있습니다.")
 
     # 공통 푸터
     render_footer()
