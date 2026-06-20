@@ -417,12 +417,12 @@ def render_top_menu():
     with cols[0]:
         st.page_link("app.py", label="🏛️ HOME", use_container_width=True)
     with cols[1]:
-        st.page_link("pages/경매_절차_안내.py", label="📋 경매 절차 안내", use_container_width=True)
+        st.page_link("pages/auction_procedure.py", label="📋 경매 절차 안내", use_container_width=True)
     with cols[2]:
-        st.page_link("pages/권리분석_튜터.py", label="📚 권리분석 튜터", use_container_width=True)
+        st.page_link("pages/rights_analysis.py", label="📚 권리분석 튜터", use_container_width=True)
     with cols[3]:
-        st.page_link("pages/사례_퀴즈_연습.py", label="📝 사례 퀴즈 연습", use_container_width=True)
+        st.page_link("pages/case_quiz.py", label="📝 사례 퀴즈 연습", use_container_width=True)
     with cols[4]:
-        st.page_link("pages/경매_용어_사전.py", label="🔍 경매 용어 사전", use_container_width=True)
+        st.page_link("pages/glossary.py", label="🔍 경매 용어 사전", use_container_width=True)
     with cols[5]:
-        st.page_link("pages/AI_입찰가_예측.py", label="💰 AI 입찰가 예측", use_container_width=True)
+        st.page_link("pages/bid_prediction.py", label="💰 AI 입찰가 예측", use_container_width=True)
