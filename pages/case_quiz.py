@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-pages/3_📝_사례_퀴즈_연습.py
+pages/case_quiz.py
 
 Streamlit 멀티페이지 중 '사례 퀴즈 연습' 진입점 파일입니다.
 """

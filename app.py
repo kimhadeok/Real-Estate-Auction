@@ -64,7 +64,7 @@ AuctionAgent AI <span style="color: var(--secondary);">Platform</span>
 <div class="card-title">1. 경매 절차 안내</div>
 <div class="card-desc">경매신청부터 입찰, 대금 납부, 배당 순서까지 9단계의 흐름도와 관련 법령 조문을 챗봇과 공부합니다.</div>
 </div>""", unsafe_allow_html=True)
-        st.page_link("pages/경매_절차_안내.py", label="👉 경매 절차 안내봇 이동", use_container_width=True)
+        st.page_link("pages/auction_procedure.py", label="👉 경매 절차 안내봇 이동", use_container_width=True)
 
     with col2:
         st.markdown("""<div class="card-container">
@@ -72,7 +72,7 @@ AuctionAgent AI <span style="color: var(--secondary);">Platform</span>
 <div class="card-title">2. 권리분석 튜터</div>
 <div class="card-desc">가장 위험하고 손실이 빈번한 말소기준권리 찾기, 임차인의 대항력 유무 판단 요건을 집중 학습합니다.</div>
 </div>""", unsafe_allow_html=True)
-        st.page_link("pages/권리분석_튜터.py", label="👉 권리분석 튜터봇 이동", use_container_width=True)
+        st.page_link("pages/rights_analysis.py", label="👉 권리분석 튜터봇 이동", use_container_width=True)
 
     with col3:
         st.markdown("""<div class="card-container">
@@ -80,7 +80,7 @@ AuctionAgent AI <span style="color: var(--secondary);">Platform</span>
 <div class="card-title">3. 사례 퀴즈 연습</div>
 <div class="card-desc">가상 등기부와 임차인 명세서를 분석하고 직접 리스크 답안을 작성하여 AI 맞춤 채점 피드백을 받습니다.</div>
 </div>""", unsafe_allow_html=True)
-        st.page_link("pages/사례_퀴즈_연습.py", label="👉 사례 및 퀴즈 연습실 이동", use_container_width=True)
+        st.page_link("pages/case_quiz.py", label="👉 사례 및 퀴즈 연습실 이동", use_container_width=True)
 
     # 3. 4단계 지능형 멀티 에이전트 워크플로우 (인포그래픽 스타일)
     st.divider()

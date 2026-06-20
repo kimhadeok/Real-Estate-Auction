@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-pages/경매_절차_안내.py
+pages/auction_procedure.py
 
 Streamlit 멀티페이지 중 '경매 절차 안내' 진입점 파일입니다.
 """

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-pages/2_📚_권리분석_튜터.py
+pages/rights_analysis.py
 
 Streamlit 멀티페이지 중 '권리분석 튜터' 진입점 파일입니다.
 """

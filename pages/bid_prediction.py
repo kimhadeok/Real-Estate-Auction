@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-pages/5_💰_AI_입찰가_예측.py
+pages/bid_prediction.py
 
 Streamlit 멀티페이지 중 'AI 입찰가 예측 (Price Oracle)' 진입점 파일입니다.
 """
