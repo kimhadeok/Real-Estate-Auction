@@ -191,7 +191,7 @@ def build_collection(collection_name: str, chunks: list[dict], chroma_client, em
     except Exception:
         pass
 
-    collection = chroma_client.create_collection(
+    chroma_client.create_collection(
         name=collection_name,
         metadata={"hnsw:space": "cosine"},
     )
@@ -208,6 +208,8 @@ def build_collection(collection_name: str, chunks: list[dict], chroma_client, em
     print(f"  ↳ '{collection_name}': {len(chunks)}개 청크 임베딩 중...")
     embeddings = embedding_fn.embed_documents(documents)
 
+    # add() 직전 컬렉션 참조를 재취득하여 UUID 불일치(NotFoundError) 방지
+    collection = chroma_client.get_collection(name=collection_name)
     collection.add(
         ids=ids,
         documents=documents,

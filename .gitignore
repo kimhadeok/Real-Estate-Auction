@@ -16,6 +16,10 @@ venv/
 # ChromaDB local storage
 chroma_db/
 
+# Ingest completion marker (auto-generated)
+.ingest_done
+.ingest.lock
+
 # IDE
 .idea/
 .vscode/

@@ -372,12 +372,42 @@ def init_page(title: str, icon: str):
 
 
 
+@st.cache_resource(show_spinner=False)
+def _run_ingest_once():
+    """
+    ChromaDB 지식베이스를 최초 1회만 구축합니다.
+    st.cache_resource는 동일 프로세스 내에서 공유되므로
+    Streamlit Cloud 멀티워커 환경의 중복 실행(race condition)을 방지합니다.
+    완료 마커 파일(.ingest_done)로 재시작 후에도 재실행을 건너뜁니다.
+    """
+    import filelock
+
+    lock_path = config.CHROMA_DB_DIR.parent / ".ingest.lock"
+    done_path = config.CHROMA_DB_DIR.parent / ".ingest_done"
+
+    # 이미 완료된 경우 즉시 반환
+    if done_path.exists() and config.CHROMA_DB_DIR.exists():
+        return
+
+    # 파일 락으로 멀티프로세스 간 동시 실행 방지
+    with filelock.FileLock(str(lock_path), timeout=300):
+        # 락 획득 후 재확인 (다른 워커가 이미 완료했을 수 있음)
+        if done_path.exists() and config.CHROMA_DB_DIR.exists():
+            return
+
+        from ingest import run_ingest
+        run_ingest(dry_run=False)
+
+        # 완료 마커 파일 생성
+        done_path.touch()
+
+
 def ensure_db():
     """ChromaDB 로컬 디렉터리가 없으면 자동으로 빌드를 작동시킵니다."""
-    if not config.CHROMA_DB_DIR.exists():
+    done_path = config.CHROMA_DB_DIR.parent / ".ingest_done"
+    if not (done_path.exists() and config.CHROMA_DB_DIR.exists()):
         with st.spinner("📦 RAG용 지식베이스(ChromaDB)를 자동 구축하고 있습니다. 최초 1회 실행이며 약 1분 소요됩니다..."):
-            from ingest import run_ingest
-            run_ingest(dry_run=False)
+            _run_ingest_once()
         st.success("✅ 지식베이스 구축 완료!")
         st.rerun()
 

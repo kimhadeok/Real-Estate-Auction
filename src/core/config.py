@@ -13,8 +13,15 @@ load_dotenv()
 # ─── 프로젝트 경로 ───
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 DATA_DIR = BASE_DIR / "data"
-CHROMA_DB_DIR = BASE_DIR / "chroma_db"
 PROMPTS_DIR = BASE_DIR / "prompts"
+
+# Streamlit Cloud는 /mount/src가 읽기 전용이므로 /tmp를 사용
+# 로컬 개발 환경은 프로젝트 루트의 chroma_db 사용
+_IS_STREAMLIT_CLOUD = os.getenv("STREAMLIT_SHARING_MODE") == "1" or Path("/mount/src").exists()
+if _IS_STREAMLIT_CLOUD:
+    CHROMA_DB_DIR = Path("/tmp/chroma_db")
+else:
+    CHROMA_DB_DIR = BASE_DIR / "chroma_db"
 
 # ─── ChromaDB 컬렉션명 ───
 COLLECTION_LAWS = "auction_laws"
