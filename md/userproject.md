@@ -65,3 +65,6 @@ GEMINI : '[프로젝트 기획서] 부동산 경매 교육 멀티에이전트 RA
 자식 li태그 중 class="w2pageList_li_label" 3번째 li태그가 3페이지 (반복).
 urlcheck.py 코드에 page 값 지정하여 실행 하면 해당 페이지로 이동하여 csv 파일 생성.
 csv 파일명은 ./data/price_oracle/ 폴더 안에 auction_results*{페이지번호}.csv 로 생성.
+
+[데이터 정리 계획수립]
+@pla [price_oracle](file;file:///d%3A/My-Dev/GitHub/Real-Estate-Auction/data/price_oracle) 폴더 안에 있는 csv 파일들은 'AI 입찰가 예측'에 사용 할 데이터. csv 파일들을 어떻게 관리하면 효과적인지 계획을 수립하여 ./md/ 폴더에 price_oracle.md 파일 생성해줘. csv 파일의 내용이 컬럼 개수와 다른 것이 있으니 잘 판단해서 구분해야 해. 컬럼 타입은 모두 문자로 처리하고 값이 없을 경우 공백 처리해줘. 한글로 작성.
