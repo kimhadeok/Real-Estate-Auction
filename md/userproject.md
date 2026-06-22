@@ -30,7 +30,6 @@ GEMINI : '[프로젝트 기획서] 부동산 경매 교육 멀티에이전트 RA
 @dev 코드 개발 전문가 에이전트 ./md/dev.md 파일 만들기.
 @des 화면 디자인 저문가 에이전트 ./md/des.md 파일 만들기.
 
-
 ### PPT 파일 생성
 
 4개의 md 파일을 참고하여 PPT 파일 생성.
@@ -51,3 +50,18 @@ GEMINI : '[프로젝트 기획서] 부동산 경매 교육 멀티에이전트 RA
 - 전체적 화면은 깔끔한 템플릿 스타일 유지
 - 폰트는 PPT 파일 또는 구글 슬라이드에서 사용해도 문제가 없는 깔끔한 폰트로 지정.
 - 오른쪽 아래 페이지 번호는 표시. (예 : 1/9, 2/9, 3/9, ... 9/9)
+
+[데이터 수집]
+@dev
+`https://www.courtauction.go.kr/pgj/index.on?w2xPath=/pgj/ui/pgj100/PGJ151F00.xml`
+페이지에 '검색' 버튼을 클릭하여 나오는 리스트를 scv로 저정하는 기능을 urlcheck.py 파일에 코드 작성.
+'검색' 버튼 (id="mf*wfm_mainFrame_btn_rletInit").
+'검색' 버튼만 클릭.
+다른 검색 조건은 변경하지 말것.
+'검색' 버튼 이후 나타난 페이진에서 ul태그 class="w2pageList_ul" 안에
+자식 li태그 중 class="w2pageList_li_label" 로 지정된 것이 페이징 이고
+자식 li태그 중 class="w2pageList_li_label" 1번째 li태그가 1페이지
+자식 li태그 중 class="w2pageList_li_label" 2번째 li태그가 2페이지
+자식 li태그 중 class="w2pageList_li_label" 3번째 li태그가 3페이지 (반복).
+urlcheck.py 코드에 page 값 지정하여 실행 하면 해당 페이지로 이동하여 csv 파일 생성.
+csv 파일명은 ./data/price_oracle/ 폴더 안에 auction_results*{페이지번호}.csv 로 생성.
